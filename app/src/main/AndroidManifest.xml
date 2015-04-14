@@ -20,6 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".PhoneVerificationActivity"
+            android:label="@string/title_activity_phone_verification" >
+        </activity>
     </application>
 
 </manifest>

@@ -13,9 +13,9 @@ public class FoodrackApp extends Application {
     public void onCreate() {
         super.onCreate();
 
+        // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
 
         Parse.initialize(this, "m0hPkVIzDsS8cAJMXymRwPfTW9ay1GWetzW8WZTy", "CBYYxxvuVV61B5UKc47TnFTVgJ6qrKi2Etyxgopn");
-
     }
 }

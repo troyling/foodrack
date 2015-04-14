@@ -1,5 +1,8 @@
 package com.troyling.foodrack;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.annotation.Nullable;
@@ -66,41 +69,12 @@ public class SignUpFragment extends Fragment {
             public void onClick(View v) {
                 String username = nameField.getText().toString();
                 String email = emailField.getText().toString();
-                String phoneNumber = phoneField.getText().toString();
+                final String phoneNumber = phoneField.getText().toString();
                 String password = passwordField.getText().toString();
                 boolean isAgreed = agreementCheckbox.isChecked();
 
                 if (!isDataValid()) {
                     return;
-                }
-
-                int verificationCode = generateVerificationCode();
-
-                // send verification message
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                        .permitAll().build();
-                StrictMode.setThreadPolicy(policy);
-
-                DefaultHttpClient httpClient = new DefaultHttpClient();
-                httpClient.getCredentialsProvider().setCredentials(new AuthScope("api.twilio.com", AuthScope.ANY_PORT), new UsernamePasswordCredentials(ACCOUNT_SID, AUTH_TOKEN));
-                HttpPost httpPost = new HttpPost("https://api.twilio.com/2010-04-01/Accounts/ACdbf3ce43b755440dd62b66402b06b947/Messages.json");
-
-                List<NameValuePair> params = new ArrayList<NameValuePair>();
-                params.add(new BasicNameValuePair("To", "5082411700"));
-                params.add(new BasicNameValuePair("From", "+15085934034"));
-                params.add(new BasicNameValuePair("Body", "You Foodrack verification code is " + verificationCode));
-
-                try {
-                    httpPost.setEntity(new UrlEncodedFormEntity(params));
-                    HttpResponse response = httpClient.execute(httpPost);
-                    // write response to log
-                    Log.d("Http Post Response:", response.toString());
-                } catch (ClientProtocolException e) {
-                    // Log exception
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // Log exception
-                    e.printStackTrace();
                 }
 
                 // Create an account
@@ -115,14 +89,21 @@ public class SignUpFragment extends Fragment {
                     @Override
                     public void done(ParseException e) {
                         if (e == null) {
-                            // user is done signing up
-                            
+                            // TODO show a new view
+                            Intent intent = new Intent(getActivity(), PhoneVerificationActivity.class);
+                            intent.putExtra(PhoneVerificationActivity.PHONE_NUMBER, phoneNumber); // pass phone number to the new activity
+                            startActivity(intent);
                         } else {
                             // TODO we need to display the error here...
+                            promptError("Error signing up...", e.getMessage());
                             Log.e(DEBUG_ERROR_FLAG, e.getMessage());
                         }
                     }
                 });
+
+                int verificationCode = generateVerificationCode();
+                sendVerificationCode(verificationCode, phoneNumber);
+
             }
         });
 
@@ -182,5 +163,50 @@ public class SignUpFragment extends Fragment {
     private int generateVerificationCode() {
         Random rnd = new Random();
         return 100000 + rnd.nextInt(900000);
+    }
+
+    /**
+     * Display error message
+     * @param title Title for the Dialog
+     * @param message Error message for the Dialog
+     */
+    private void promptError(String title, String message) {
+        new AlertDialog.Builder(getActivity()).setTitle(title).setMessage(message).setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Do nothing
+            }
+        }).show();
+    }
+
+    /**
+     * send verification message
+     */
+    private void sendVerificationCode(int verificationCode, String phoneNumber) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                .permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        httpClient.getCredentialsProvider().setCredentials(new AuthScope("api.twilio.com", AuthScope.ANY_PORT), new UsernamePasswordCredentials(ACCOUNT_SID, AUTH_TOKEN));
+        HttpPost httpPost = new HttpPost("https://api.twilio.com/2010-04-01/Accounts/ACdbf3ce43b755440dd62b66402b06b947/Messages.json");
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("To", phoneNumber));
+        params.add(new BasicNameValuePair("From", "+15085934034"));
+        params.add(new BasicNameValuePair("Body", "You Foodrack verification code is " + verificationCode));
+
+        try {
+            httpPost.setEntity(new UrlEncodedFormEntity(params));
+            HttpResponse response = httpClient.execute(httpPost);
+            // write response to log
+            Log.d("Http Post Response:", response.toString());
+        } catch (ClientProtocolException e) {
+            // Log exception
+            e.printStackTrace();
+        } catch (IOException e) {
+            // Log exception
+            e.printStackTrace();
+        }
     }
 }
