@@ -55,7 +55,7 @@ public class MainActivity extends ActionBarActivity
         Fragment mmFragment = null;
         switch (position) {
             case 0:
-                mmFragment = new menu1_Fragment();
+                mmFragment = new SignUpFragment();
                 break;
             case 1:
                 mmFragment = new menu2_Fragment();

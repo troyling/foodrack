@@ -27,10 +27,9 @@
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
             android:ems="10"
-            android:id="@+id/editText"
+            android:id="@+id/name_field"
             android:layout_weight="1"
             android:hint="Name" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -45,9 +44,11 @@
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
             android:ems="10"
-            android:id="@+id/editText2"
+            android:id="@+id/email_field"
             android:layout_weight="1"
             android:hint="Email" />
+            android:id="@+id/email_field"
+            android:layout_weight="1" />
     </LinearLayout>
 
     <LinearLayout
@@ -62,7 +63,8 @@
             android:layout_height="wrap_content"
             android:inputType="phone"
             android:ems="10"
-            android:id="@+id/editText3"
+
+            android:id="@+id/phone_field"
             android:layout_weight="1"
             android:hint="Phone" />
     </LinearLayout>
@@ -79,7 +81,7 @@
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:ems="10"
-            android:id="@+id/editText4"
+            android:id="@+id/password_field"
             android:layout_weight="1"
             android:hint="Password" />
     </LinearLayout>
@@ -95,7 +97,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Agree Terms and Service"
-            android:id="@+id/checkBox"
+            android:id="@+id/agreement_checkbox"
             android:checked="false" />
 
     </LinearLayout>
@@ -109,7 +111,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Confirm"
-            android:id="@+id/button"
+            android:id="@+id/sign_up_button"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp" />
