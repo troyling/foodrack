@@ -1,10 +1,7 @@
 package com.troyling.foodrack;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,24 +12,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.foodrack.helpers.ErrorHelper;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 /**
  * Created by ChandlerWu on 4/13/15.
@@ -40,11 +23,7 @@ import java.util.Random;
 public class SignUpFragment extends Fragment {
     private static String DEBUG_ERROR_FLAG = "Sign Up Error: ";
 
-    private static final String ACCOUNT_SID = "ACdbf3ce43b755440dd62b66402b06b947";
-    private static final String AUTH_TOKEN = "17d6f02d5ef262956b941c21c50ffba9";
-
     View rootView;
-
     CheckBox agreementCheckbox;
     EditText nameField;
     EditText emailField;
@@ -84,6 +63,7 @@ public class SignUpFragment extends Fragment {
                 newUser.setPassword(password);
                 newUser.put("name", username);
                 newUser.put("isVerified", false); // new user required text code verification
+                newUser.put("isPaymentAvailable", false); // false since user has yet provide credit card information
 
                 newUser.signUpInBackground(new SignUpCallback() {
                     @Override
@@ -95,15 +75,11 @@ public class SignUpFragment extends Fragment {
                             startActivity(intent);
                         } else {
                             // TODO we need to display the error here...
-                            promptError("Error signing up...", e.getMessage());
+                            ErrorHelper.getInstance().promptError(getActivity(), "Error signing up...", e.getMessage());
                             Log.e(DEBUG_ERROR_FLAG, e.getMessage());
                         }
                     }
                 });
-
-                int verificationCode = generateVerificationCode();
-                sendVerificationCode(verificationCode, phoneNumber);
-
             }
         });
 
@@ -157,56 +133,7 @@ public class SignUpFragment extends Fragment {
         return true;
     }
 
-    /**
-     * @return 6 digit verification code
-     */
-    private int generateVerificationCode() {
-        Random rnd = new Random();
-        return 100000 + rnd.nextInt(900000);
-    }
 
-    /**
-     * Display error message
-     * @param title Title for the Dialog
-     * @param message Error message for the Dialog
-     */
-    private void promptError(String title, String message) {
-        new AlertDialog.Builder(getActivity()).setTitle(title).setMessage(message).setNegativeButton("Dismiss", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // Do nothing
-            }
-        }).show();
-    }
 
-    /**
-     * send verification message
-     */
-    private void sendVerificationCode(int verificationCode, String phoneNumber) {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                .permitAll().build();
-        StrictMode.setThreadPolicy(policy);
 
-        DefaultHttpClient httpClient = new DefaultHttpClient();
-        httpClient.getCredentialsProvider().setCredentials(new AuthScope("api.twilio.com", AuthScope.ANY_PORT), new UsernamePasswordCredentials(ACCOUNT_SID, AUTH_TOKEN));
-        HttpPost httpPost = new HttpPost("https://api.twilio.com/2010-04-01/Accounts/ACdbf3ce43b755440dd62b66402b06b947/Messages.json");
-
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("To", phoneNumber));
-        params.add(new BasicNameValuePair("From", "+15085934034"));
-        params.add(new BasicNameValuePair("Body", "You Foodrack verification code is " + verificationCode));
-
-        try {
-            httpPost.setEntity(new UrlEncodedFormEntity(params));
-            HttpResponse response = httpClient.execute(httpPost);
-            // write response to log
-            Log.d("Http Post Response:", response.toString());
-        } catch (ClientProtocolException e) {
-            // Log exception
-            e.printStackTrace();
-        } catch (IOException e) {
-            // Log exception
-            e.printStackTrace();
-        }
-    }
 }

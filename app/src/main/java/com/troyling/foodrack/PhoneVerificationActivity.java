@@ -1,31 +1,51 @@
 package com.troyling.foodrack;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.foodrack.helpers.ErrorHelper;
+import com.foodrack.helpers.TextVerificationHelper;
 
 
 public class PhoneVerificationActivity extends ActionBarActivity {
     public static String PHONE_NUMBER = "phoneNumber";
+    private static String TEXT_PROMPT = "A 6 digit verification code has been sent to ";
+    private EditText verificationCodeField;
+    private Button changeNumberButton;
+    private Button sendAgainButton;
+    private TextView phoneNumberTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_verification);
 
-        Intent iin= getIntent();
-        Bundle b = iin.getExtras();
+        verificationCodeField = (EditText) this.findViewById(R.id.verification_code_field);
+        changeNumberButton = (Button) this.findViewById(R.id.change_number_button);
+        sendAgainButton = (Button) this.findViewById(R.id.send_again_button);
+        phoneNumberTextView = (TextView) this.findViewById(R.id.phone_number_textView);
 
+        // get data phone number from previous activity
+        Intent intent = getIntent();
+        Bundle b = intent.getExtras();
         String phoneNumber = "";
-        if(b != null) {
+        if (b != null) {
             phoneNumber = (String) b.get(PHONE_NUMBER);
+            phoneNumberTextView.setText(TEXT_PROMPT + phoneNumber);
         }
 
-        new AlertDialog.Builder(this).setMessage(phoneNumber).show();
-
+        // send notification
+        if (!phoneNumber.isEmpty()) {
+            TextVerificationHelper.getInstance().sendVerificationCode(phoneNumber);
+        } else {
+            ErrorHelper.getInstance().promptError(this, "Error sending code", "Unable to send verification code now. Please try again later");
+        }
     }
 
 
