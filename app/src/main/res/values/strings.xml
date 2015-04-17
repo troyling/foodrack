@@ -16,4 +16,5 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="phone_number_message">A text message was sent to</string>
+    <string name="title_activity_change_number">ChangeNumber</string>
 </resources>

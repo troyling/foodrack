@@ -37,7 +37,8 @@
         android:text="Change number"
         android:id="@+id/change_number_button"
         android:layout_below="@+id/phone_number_textView"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -46,18 +47,26 @@
         android:ems="10"
         android:id="@+id/verification_code_field"
         android:textAlignment="center"
+        android:maxLength="6"
+        android:gravity="center"
         android:layout_below="@+id/change_number_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="20dp"
+        android:layout_alignLeft="@+id/change_number_button"
+        android:layout_alignStart="@+id/change_number_button"
+        android:layout_alignRight="@+id/change_number_button"
+        android:layout_alignEnd="@+id/change_number_button" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Send code again"
+        android:text="Send again"
         android:id="@+id/send_again_button"
-        android:layout_below="@+id/verification_code_field"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignLeft="@+id/verification_code_field"
+        android:layout_alignStart="@+id/verification_code_field"
+        android:layout_alignRight="@+id/verification_code_field"
+        android:layout_alignEnd="@+id/verification_code_field" />
 
 
 </RelativeLayout>

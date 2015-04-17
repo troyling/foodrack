@@ -58,10 +58,11 @@ public class SignUpFragment extends Fragment {
 
                 // Create an account
                 ParseUser newUser = new ParseUser();
-                newUser.setUsername(phoneNumber);
+                newUser.setUsername(email);
                 newUser.setEmail(email);
                 newUser.setPassword(password);
                 newUser.put("name", username);
+                newUser.put("phone", phoneNumber);
                 newUser.put("isVerified", false); // new user required text code verification
                 newUser.put("isPaymentAvailable", false); // false since user has yet provide credit card information
 
@@ -73,6 +74,7 @@ public class SignUpFragment extends Fragment {
                             Intent intent = new Intent(getActivity(), PhoneVerificationActivity.class);
                             intent.putExtra(PhoneVerificationActivity.PHONE_NUMBER, phoneNumber); // pass phone number to the new activity
                             startActivity(intent);
+                            getActivity().finish();
                         } else {
                             // TODO we need to display the error here...
                             ErrorHelper.getInstance().promptError(getActivity(), "Error signing up...", e.getMessage());

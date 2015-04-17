@@ -78,6 +78,7 @@ public class TextVerificationHelper {
         }
     }
 
+
     /**
      * @return True if the given verification is correct. False otherwise
      */

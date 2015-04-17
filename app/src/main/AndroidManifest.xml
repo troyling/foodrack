@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MyActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,6 +23,10 @@
         <activity
             android:name=".PhoneVerificationActivity"
             android:label="@string/title_activity_phone_verification" >
+        </activity>
+        <activity
+            android:name=".ChangeNumberActivity"
+            android:label="@string/title_activity_change_number" >
         </activity>
     </application>
 
