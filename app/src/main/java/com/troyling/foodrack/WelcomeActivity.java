@@ -35,7 +35,7 @@ public class WelcomeActivity extends ActionBarActivity {
                 finish();
             } else {
                 // jump to order view
-                Intent intent = new Intent(this, PhoneVerificationActivity.class);
+                Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -49,7 +49,6 @@ public class WelcomeActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(WelcomeActivity.this, SignUpActivity.class);
                 startActivity(intent);
-//                ErrorHelper.getInstance().promptError(WelcomeActivity.this, "Sign up", "This should jump to sign up view");
             }
         });
 
@@ -58,7 +57,6 @@ public class WelcomeActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(WelcomeActivity.this, SignInActivity.class);
                 startActivity(intent);
-//                ErrorHelper.getInstance().promptError(WelcomeActivity.this, "Sign in", "This should jump to sign in view");
             }
         });
     }

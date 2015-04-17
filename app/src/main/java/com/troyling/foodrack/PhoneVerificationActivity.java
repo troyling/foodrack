@@ -11,9 +11,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.foodrack.helpers.ErrorHelper;
 import com.foodrack.helpers.TextVerificationHelper;
+import com.parse.ParseUser;
 
 
 public class PhoneVerificationActivity extends ActionBarActivity {
@@ -60,7 +62,15 @@ public class PhoneVerificationActivity extends ActionBarActivity {
                 if (input.length() != 6) return;
 
                 if (TextVerificationHelper.getInstance().isCodeValid(Integer.parseInt(input))) {
-                    ErrorHelper.getInstance().promptError(PhoneVerificationActivity.this, "Passed", "Verification code is valid");
+                    // change the verification status of the current user in backend
+                    final ParseUser currentUser = ParseUser.getCurrentUser();
+                    currentUser.put("isVerified", true);
+                    currentUser.saveEventually();
+
+                    // move to main view
+                    Toast.makeText(PhoneVerificationActivity.this, "Phone number is successfully verified.", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(PhoneVerificationActivity.this, MainActivity.class));
+                    finish();
                 } else {
                     ErrorHelper.getInstance().promptError(PhoneVerificationActivity.this, "Error..", "The verification code you entered is not the same as the one sent to you.");
                 }

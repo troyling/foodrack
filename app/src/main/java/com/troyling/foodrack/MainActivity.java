@@ -49,7 +49,7 @@ public class MainActivity extends ActionBarActivity
         Fragment mmFragment = null;
         switch (position) {
             case 0:
-//                mmFragment = new SignUpActivity();
+                mmFragment = new menu1_Fragment();
                 break;
             case 1:
                 mmFragment = new menu2_Fragment();
