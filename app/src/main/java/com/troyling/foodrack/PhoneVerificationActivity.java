@@ -17,9 +17,9 @@ import com.foodrack.helpers.TextVerificationHelper;
 
 
 public class PhoneVerificationActivity extends ActionBarActivity {
-    public static String PHONE_NUMBER = "phoneNumber";
-    private static String TEXT_PROMPT = "A 6 digit verification code has been sent to ";
-    private String phoneNumber = "5082411700";
+    public final static String PHONE_NUMBER = "phoneNumber";
+    private final static String TEXT_PROMPT = "A 6 digit verification code has been sent to ";
+    private String phoneNumber;
     private EditText verificationCodeField;
     private Button changeNumberButton;
     private Button sendAgainButton;
@@ -81,7 +81,6 @@ public class PhoneVerificationActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(PhoneVerificationActivity.this, ChangeNumberActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
     }

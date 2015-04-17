@@ -12,9 +12,12 @@
     <string name="action_order">New order</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_phone_verification">PhoneVerificationActivity</string>
+    <string name="title_activity_phone_verification">Verification</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="phone_number_message">A text message was sent to</string>
     <string name="title_activity_change_number">ChangeNumber</string>
+    <string name="title_activity_welcome">Welcome</string>
+    <string name="title_activity_sign_in">Sign In</string>
+    <string name="title_activity_sign_up">Sign Up</string>
 </resources>

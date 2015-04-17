@@ -2,12 +2,11 @@ package com.troyling.foodrack;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -20,10 +19,9 @@ import com.parse.SignUpCallback;
 /**
  * Created by ChandlerWu on 4/13/15.
  */
-public class SignUpFragment extends Fragment {
+public class SignUpActivity extends ActionBarActivity {
     private static String DEBUG_ERROR_FLAG = "Sign Up Error: ";
 
-    View rootView;
     CheckBox agreementCheckbox;
     EditText nameField;
     EditText emailField;
@@ -31,17 +29,17 @@ public class SignUpFragment extends Fragment {
     EditText passwordField;
     Button confirmButton;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.sign_up_layout, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.sign_up_layout);
 
-        agreementCheckbox = (CheckBox) rootView.findViewById(R.id.agreement_checkbox);
-        nameField = (EditText) rootView.findViewById(R.id.name_field);
-        emailField = (EditText) rootView.findViewById(R.id.email_field);
-        phoneField = (EditText) rootView.findViewById(R.id.phone_field);
-        passwordField = (EditText) rootView.findViewById(R.id.password_field);
-        confirmButton = (Button) rootView.findViewById(R.id.sign_up_button);
+        agreementCheckbox = (CheckBox) this.findViewById(R.id.agreement_checkbox);
+        nameField = (EditText) this.findViewById(R.id.name_field);
+        emailField = (EditText) this.findViewById(R.id.email_field);
+        phoneField = (EditText) this.findViewById(R.id.phone_field);
+        passwordField = (EditText) this.findViewById(R.id.password_field);
+        confirmButton = (Button) this.findViewById(R.id.sign_up_button);
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,21 +69,41 @@ public class SignUpFragment extends Fragment {
                     public void done(ParseException e) {
                         if (e == null) {
                             // TODO show a new view
-                            Intent intent = new Intent(getActivity(), PhoneVerificationActivity.class);
+                            Intent intent = new Intent(SignUpActivity.this, PhoneVerificationActivity.class);
                             intent.putExtra(PhoneVerificationActivity.PHONE_NUMBER, phoneNumber); // pass phone number to the new activity
                             startActivity(intent);
-                            getActivity().finish();
+                            finish();
                         } else {
                             // TODO we need to display the error here...
-                            ErrorHelper.getInstance().promptError(getActivity(), "Error signing up...", e.getMessage());
+                            ErrorHelper.getInstance().promptError(SignUpActivity.this, "Error signing up...", e.getMessage());
                             Log.e(DEBUG_ERROR_FLAG, e.getMessage());
                         }
                     }
                 });
             }
         });
+    }
 
-        return rootView;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_sign_in, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /**
