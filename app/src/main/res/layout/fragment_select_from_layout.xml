@@ -37,7 +37,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="+ Request"
-        android:id="@+id/buttonRequest"
+        android:id="@+id/requestButton"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />

@@ -29,7 +29,7 @@ public class SignInActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sign_in_layout);
+        setContentView(R.layout.activity_sign_in_layout);
 
         signInTokenField = (EditText)this.findViewById(R.id.activity_sign_in_token);
         passwordField = (EditText)this.findViewById(R.id.activity_sign_in_password);

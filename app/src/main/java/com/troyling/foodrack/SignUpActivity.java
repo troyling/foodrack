@@ -32,7 +32,7 @@ public class SignUpActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sign_up_layout);
+        setContentView(R.layout.activity_sign_up_layout);
 
         agreementCheckbox = (CheckBox) this.findViewById(R.id.agreement_checkbox);
         nameField = (EditText) this.findViewById(R.id.name_field);
