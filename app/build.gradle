@@ -23,4 +23,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar', 'Parse-*.jar'])
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.parse.bolts:bolts-android:1.+'
+    compile 'com.braintreepayments.api:braintree:1.+'
+    compile files('libs/android-async-http-1.4.6.jar')
 }

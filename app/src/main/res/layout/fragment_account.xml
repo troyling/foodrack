@@ -10,4 +10,5 @@
         android:text="Account"
         android:id="@+id/textView17"
         android:layout_gravity="center_horizontal" />
+
 </LinearLayout>
