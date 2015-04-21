@@ -2,7 +2,10 @@ package com.troyling.foodrack;
 
 import android.app.Application;
 
+import com.foodrack.models.Item;
+import com.foodrack.models.Order;
 import com.parse.Parse;
+import com.parse.ParseObject;
 
 /**
  * Created by troyling on 4/13/15.
@@ -15,6 +18,9 @@ public class FoodrackApp extends Application {
 
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
+        // Register subclasses
+        ParseObject.registerSubclass(Order.class);
+        ParseObject.registerSubclass(Item.class);
 
         Parse.initialize(this, "m0hPkVIzDsS8cAJMXymRwPfTW9ay1GWetzW8WZTy", "CBYYxxvuVV61B5UKc47TnFTVgJ6qrKi2Etyxgopn");
     }
