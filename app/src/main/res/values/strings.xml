@@ -20,5 +20,6 @@
     <string name="title_activity_welcome">Welcome</string>
     <string name="title_activity_sign_in">Sign In</string>
     <string name="title_activity_sign_up">Sign Up</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>
