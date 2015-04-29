@@ -7,16 +7,23 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 
 import com.braintreepayments.api.dropin.BraintreePaymentActivity;
+import com.foodrack.adapter.CartListAdapter;
 import com.foodrack.helpers.ErrorHelper;
+import com.foodrack.models.Item;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 
 import org.apache.http.Header;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ChandlerWu on 4/17/15.
@@ -30,6 +37,41 @@ public class CartActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart_layout);
+
+        ListView list = (ListView) findViewById(R.id.listView);
+
+        List<Item> listOfItems = new ArrayList<Item>();
+        //!!!!!!!!!!!!!!!!!!!!
+        listOfItems.add(new Item());
+        listOfItems.add(new Item());
+        listOfItems.add(new Item());
+        listOfItems.add(new Item());
+        listOfItems.add(new Item());
+        listOfItems.add(new Item());
+        listOfItems.add(new Item());
+        listOfItems.add(new Item());
+        listOfItems.add(new Item());
+        listOfItems.add(new Item());
+        listOfItems.add(new Item());
+        listOfItems.add(new Item());
+        listOfItems.add(new Item());
+        listOfItems.add(new Item());
+        listOfItems.add(new Item());
+        listOfItems.add(new Item());
+        //!!!!!!!!!!!!!!!!!!!!!
+
+        CartListAdapter adapter = new CartListAdapter(this, listOfItems);
+
+        list.setAdapter(adapter);
+        list.setDividerHeight(0);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(CartActivity.this, ItemActivity.class);
+                startActivity(intent);
+
+            }
+        });
 
         getTokenFromServer();
 

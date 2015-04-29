@@ -12,34 +12,36 @@ import com.parse.ParseUser;
 
 @ParseClassName("Item")
 public class Item extends ParseObject {
+    public static final String MENU_ITEM = "menuItem";
 
     public Item() {
         super();
     }
 
-    // Use put to modify field values
-    public void setName(String name) {
-        put("foodName", name);
+    public void setMenuItem(MenuItem menuItem) {
+        put(MENU_ITEM, menuItem);
     }
 
-    public String getName() {
-        return getString("foodName");
-    }
-
-    public void setPrice(double price) {
-        put("price", price);
-    }
-
-    public double getPrice() {
-        return getLong("price");
+    public MenuItem getMenuItem() {
+        return (MenuItem)get(MENU_ITEM);
     }
 
     public void setNumOfItems(int num) {
         put("numOfItem", num);
     }
 
+    // !!!!!!!!!!!!!!!!! Test code, to be changed!!
     public int getNumOfItems() {
-        return getInt("numOfItem");
+        return 5;
+        //To be changed below
+        //return getInt("numOfItem");
     }
 
+    public String getName() {
+        return "Ice Cream";
+    }
+
+    public double getPrice() {
+        return 8.69;
+    }
 }

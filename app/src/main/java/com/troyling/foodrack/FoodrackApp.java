@@ -6,6 +6,7 @@ import com.foodrack.helpers.DataHelper;
 import com.foodrack.models.Item;
 import com.foodrack.models.MenuItem;
 import com.foodrack.models.Order;
+import com.foodrack.models.Request;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -25,6 +26,7 @@ public class FoodrackApp extends Application {
         ParseObject.registerSubclass(MenuItem.class);
         ParseObject.registerSubclass(Order.class);
         ParseObject.registerSubclass(Item.class);
+        ParseObject.registerSubclass(Request.class);
         Parse.initialize(this, "m0hPkVIzDsS8cAJMXymRwPfTW9ay1GWetzW8WZTy", "CBYYxxvuVV61B5UKc47TnFTVgJ6qrKi2Etyxgopn");
 
         // update data in cache

@@ -1,4 +1,4 @@
-package com.troyling.foodrack;
+package com.foodrack.adapter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
+
+import com.troyling.foodrack.R;
 
 /**
  * Created by ChandlerWu on 4/17/15.

@@ -7,11 +7,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Select  below to start your order"
+        android:text="Choose a restaurant to start"
         android:id="@+id/textView"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="40dp"
-        android:layout_marginTop="40dp" />
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -20,7 +20,8 @@
         android:text="Donkin Donuts"
         android:id="@+id/textDD"
         android:layout_gravity="center_horizontal"
-        android:textSize="45dp" />
+        android:textSize="45dp"
+        android:layout_marginTop="20dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -33,13 +34,22 @@
         android:layout_marginBottom="30dp"
         android:layout_marginTop="30dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Delivery Hours:   9:00am - 5:00pm"
+        android:id="@+id/textView31"
+        android:layout_gravity="center" />
+
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="+ Request"
+        android:text="Request a new restaurant"
         android:id="@+id/requestButton"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp" />
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="40dp" />
 
 </LinearLayout>

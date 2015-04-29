@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.foodrack.models.Request;
+import com.parse.ParseUser;
+
 
 /**
  * Created by ChandlerWu on 4/17/15.
@@ -20,22 +23,31 @@ public class RequestActivity extends ActionBarActivity {
     Button sendButton;
     EditText nameText;
     EditText reasonText;
+    Request request;
+    ParseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_new_place);
 
-        nameText = (EditText)this.findViewById(R.id.editTextName);  // To be Implemented;
-        reasonText = (EditText)this.findViewById(R.id.editTextReason); // To be Implemented;
+        request = new Request();
+        user = ParseUser.getCurrentUser();
+
+        nameText = (EditText)this.findViewById(R.id.editTextName);
+        reasonText = (EditText)this.findViewById(R.id.editTextReason);
         sendButton = (Button)this.findViewById(R.id.buttonRequest);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Request has been sent!",
-                        Toast.LENGTH_SHORT).show();
-                // To be Implemented;
+                Toast.makeText(getApplicationContext(), "Thank you, your request has been sent!",
+                        Toast.LENGTH_LONG).show();
+                // Set the request and save it
+                request.setNameOfPlace(nameText.getText().toString());
+                request.setReason(reasonText.getText().toString());
+                request.setOwner(user);
+                request.saveEventually();
             }
         });
     }

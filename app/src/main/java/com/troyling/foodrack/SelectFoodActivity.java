@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import com.foodrack.adapter.MenuExpandableListAdapter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +58,8 @@ public class SelectFoodActivity extends ActionBarActivity {
                                 listDataHeader.get(groupPosition)).get(
                                 childPosition), Toast.LENGTH_SHORT)
                         .show();
+                Intent intent = new Intent(SelectFoodActivity.this, ItemActivity.class);
+                startActivity(intent);
                 return false;
             }
         });
