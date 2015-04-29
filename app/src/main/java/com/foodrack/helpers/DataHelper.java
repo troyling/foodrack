@@ -41,6 +41,7 @@ public class DataHelper {
 
     private void syncMenuItemInBackground() {
         ParseQuery<MenuItem> menuItemQuery = ParseQuery.getQuery(MenuItem.class);
+        menuItemQuery.include(MenuItem.RESTAURANT);
         menuItemQuery.orderByAscending(MenuItem.RESTAURANT); // FIXME THIS MIGHT BE ERROR PRONE
         menuItemQuery.findInBackground(new FindCallback<MenuItem>() {
             @Override

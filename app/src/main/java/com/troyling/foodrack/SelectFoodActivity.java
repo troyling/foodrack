@@ -3,14 +3,20 @@ package com.troyling.foodrack;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.foodrack.adapter.MenuExpandableListAdapter;
+import com.foodrack.helpers.ErrorHelper;
+import com.foodrack.models.MenuItem;
+import com.foodrack.models.Restaurant;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +26,8 @@ import java.util.List;
  * Created by ChandlerWu on 4/17/15.
  */
 public class SelectFoodActivity extends ActionBarActivity {
+    public final static String RESTAURANT_KEY = "RESTAURANT";
+    public final static String RESTAURANT_NAME = "RESTAURANT_NAME";
 
     MenuExpandableListAdapter listAdapter;
     ExpandableListView expListView;
@@ -31,6 +39,37 @@ public class SelectFoodActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_food);
+
+        Intent intent = getIntent();
+        String restaurantName = intent.getStringExtra(RESTAURANT_NAME);
+
+        // Find menus from Local
+        ParseQuery<Restaurant> restaurantQuery = ParseQuery.getQuery(Restaurant.class);
+        restaurantQuery.fromLocalDatastore();
+        restaurantQuery.whereEqualTo(Restaurant.NAME, restaurantName);
+        restaurantQuery.findInBackground(new FindCallback<Restaurant>() {
+            @Override
+            public void done(List<Restaurant> restaurants, ParseException e) {
+                if (e == null && restaurants.size() == 1) {
+                    // TODO this might change over time
+
+                    ParseQuery<MenuItem> menuItemQuery = ParseQuery.getQuery(MenuItem.class);
+                    menuItemQuery.fromLocalDatastore();
+                    menuItemQuery.whereEqualTo(MenuItem.RESTAURANT, restaurants.get(0));
+                    menuItemQuery.findInBackground(new FindCallback<MenuItem>() {
+                        @Override
+                        public void done(List<MenuItem> menuItems, ParseException e) {
+                            Log.i("Menu Items", "Size: " + menuItems.size());
+                        }
+                    });
+
+                } else {
+                    ErrorHelper.getInstance().promptError(SelectFoodActivity.this, "Error", "Unable to read menu for the selected restaurant...");
+                }
+            }
+        });
+
+
 
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expandableListMenu);
@@ -124,7 +163,7 @@ public class SelectFoodActivity extends ActionBarActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
