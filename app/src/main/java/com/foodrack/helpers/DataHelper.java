@@ -57,7 +57,6 @@ public class DataHelper {
             public void done(List<Order> orderList, ParseException e) {
                 if (e == null) {
                     ParseObject.unpinAllInBackground(ORDERS, orderList);
-                    Log.i("DATAHELPER", "" + orderList.size());
 
                     // use the nonempty order as user's shopping cart
                     for (final Order order : orderList) {
@@ -70,6 +69,7 @@ public class DataHelper {
                                     if (items != null) {
                                         if (items.size() > 0) {
                                             shoppingCart = order;
+                                            pinShoppingCartInBackground();
                                         }
                                     }
                                 }
@@ -87,7 +87,6 @@ public class DataHelper {
      */
     public Order getShoppingCart() {
         if (shoppingCart == null) {
-            Log.i("DATAHELPER", "Creating new shopping cart");
             shoppingCart = new Order();
         }
         return shoppingCart;
