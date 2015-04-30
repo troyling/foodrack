@@ -2,13 +2,16 @@ package com.foodrack.helpers;
 
 import android.util.Log;
 
+import com.foodrack.models.Item;
 import com.foodrack.models.MenuItem;
+import com.foodrack.models.Order;
 import com.foodrack.models.Restaurant;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 
 import java.util.List;
 
@@ -18,8 +21,10 @@ import java.util.List;
 public class DataHelper {
     private final static String RESTAURANTS = "restaurants";
     private final static String MENU_ITEMS = "menuItems";
+    private final static String ORDERS = "orders";
 
     private static DataHelper instance;
+    private static Order shoppingCart;
 
     private DataHelper() {
 
@@ -37,6 +42,62 @@ public class DataHelper {
         // update restaurants and menu
         syncRestaurantInBackground();
         syncMenuItemInBackground();
+    }
+
+    /**
+     * Clear cached orders in the cart in there is any being saved in cached
+     */
+    public void clearCachedOrderIfNecessary() {
+        // query the data from localstore and clear all data in the background
+        ParseQuery<Order> orderQuery = ParseQuery.getQuery(Order.class);
+        orderQuery.orderByDescending("createdAt");
+        orderQuery.fromLocalDatastore();
+        orderQuery.findInBackground(new FindCallback<Order>() {
+            @Override
+            public void done(List<Order> orderList, ParseException e) {
+                if (e == null) {
+                    ParseObject.unpinAllInBackground(ORDERS, orderList);
+                    Log.i("DATAHELPER", "" + orderList.size());
+
+                    // use the nonempty order as user's shopping cart
+                    for (final Order order : orderList) {
+                        ParseRelation<Item> itemRelation = order.getItems();
+                        if (itemRelation != null) {
+                            ParseQuery<Item> itemQuery = order.getItems().getQuery();
+                            itemQuery.findInBackground(new FindCallback<Item>() {
+                                @Override
+                                public void done(List<Item> items, ParseException e) {
+                                    if (items != null) {
+                                        if (items.size() > 0) {
+                                            shoppingCart = order;
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Get the shopping cart for current user
+     * @return
+     */
+    public Order getShoppingCart() {
+        if (shoppingCart == null) {
+            Log.i("DATAHELPER", "Creating new shopping cart");
+            shoppingCart = new Order();
+        }
+        return shoppingCart;
+    }
+
+    /**
+     * Cache shopping cart locally
+     */
+    public void pinShoppingCartInBackground() {
+        shoppingCart.pinInBackground(ORDERS);
     }
 
     private void syncMenuItemInBackground() {

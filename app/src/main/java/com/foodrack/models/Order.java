@@ -14,6 +14,7 @@ import com.parse.ParseUser;
 
 @ParseClassName("Order")
 public class Order extends ParseObject {
+    public final static String OWNER = "owner";
     public final static String STATUS_RECEIVED = "Received";
     public final static String STATUS_CONFIRMED = "Confirmed";
     public final static String STATUS_IN_TRANSIT = "In transit";
@@ -24,11 +25,11 @@ public class Order extends ParseObject {
     }
 
     public ParseUser getOwner() {
-        return getParseUser("owner");
+        return getParseUser(OWNER);
     }
 
     public void setOwner(ParseUser user) {
-        put("owner", user);
+        put(OWNER, user);
     }
 
     // Use put to modify field values
