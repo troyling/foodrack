@@ -12,11 +12,14 @@ import android.widget.Toast;
 
 import com.foodrack.adapter.MenuExpandableListAdapter;
 import com.foodrack.helpers.ErrorHelper;
+import com.foodrack.models.Item;
 import com.foodrack.models.MenuItem;
+import com.foodrack.models.Order;
 import com.foodrack.models.Restaurant;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,12 +32,18 @@ public class SelectFoodActivity extends ActionBarActivity {
     public final static String RESTAURANT_KEY = "RESTAURANT";
     public final static String RESTAURANT_NAME = "RESTAURANT_NAME";
 
+    public final static String FOOD_NAME_MESSAGE = "Foodrack.SelectFoodActivity.NameOfFood.MESSAGE";
+    public final static String MENUITEM_MESSAGE = "MenuItem.MESSAGE";
+
+    Order order;
+    MenuItem menuItem;
     MenuExpandableListAdapter listAdapter;
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
-
     Button orderButton;
+    List<MenuItem> listOfMenuItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,39 +52,19 @@ public class SelectFoodActivity extends ActionBarActivity {
         Intent intent = getIntent();
         String restaurantName = intent.getStringExtra(RESTAURANT_NAME);
 
-        // Find menus from Local
-        ParseQuery<Restaurant> restaurantQuery = ParseQuery.getQuery(Restaurant.class);
-        restaurantQuery.fromLocalDatastore();
-        restaurantQuery.whereEqualTo(Restaurant.NAME, restaurantName);
-        restaurantQuery.findInBackground(new FindCallback<Restaurant>() {
-            @Override
-            public void done(List<Restaurant> restaurants, ParseException e) {
-                if (e == null && restaurants.size() == 1) {
-                    // TODO this might change over time
+        // preparing list data
+        prepareListData(restaurantName);
 
-                    ParseQuery<MenuItem> menuItemQuery = ParseQuery.getQuery(MenuItem.class);
-                    menuItemQuery.fromLocalDatastore();
-                    menuItemQuery.whereEqualTo(MenuItem.RESTAURANT, restaurants.get(0));
-                    menuItemQuery.findInBackground(new FindCallback<MenuItem>() {
-                        @Override
-                        public void done(List<MenuItem> menuItems, ParseException e) {
-                            Log.i("Menu Items", "Size: " + menuItems.size());
-                        }
-                    });
-
-                } else {
-                    ErrorHelper.getInstance().promptError(SelectFoodActivity.this, "Error", "Unable to read menu for the selected restaurant...");
-                }
-            }
-        });
-
+        // New Order
+        order = new Order();
+        order.setOwner(ParseUser.getCurrentUser());
+        order.setIsPaid(false);
+        order.setStatus(Order.STATUS_RECEIVED);
+        order.pinInBackground();
 
 
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expandableListMenu);
-
-        // preparing list data
-        prepareListData();
 
         listAdapter = new MenuExpandableListAdapter(this, listDataHeader, listDataChild);
 
@@ -89,21 +78,22 @@ public class SelectFoodActivity extends ActionBarActivity {
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
                 // TODO Auto-generated method stub
-                Toast.makeText(
-                        getApplicationContext(),
-                        listDataHeader.get(groupPosition)
-                                + " : "
-                                + listDataChild.get(
-                                listDataHeader.get(groupPosition)).get(
-                                childPosition), Toast.LENGTH_SHORT)
-                        .show();
+                String childName = listDataChild.get(listDataHeader.get(groupPosition)).get(
+                        childPosition);
                 Intent intent = new Intent(SelectFoodActivity.this, ItemActivity.class);
+                intent.putExtra(FOOD_NAME_MESSAGE, childName);
+                for(int i = 0; i < listOfMenuItem.size(); i++) {
+                    if (listOfMenuItem.get(i).getName().equals(childName)) {
+                        menuItem = listOfMenuItem.get(i);
+                    }
+                }
+                intent.putExtra(MENUITEM_MESSAGE, menuItem);
                 startActivity(intent);
                 return false;
             }
         });
 
-        orderButton = (Button)this.findViewById(R.id.buttonOrder);
+        orderButton = (Button) findViewById(R.id.buttonOrder);
         orderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,43 +106,76 @@ public class SelectFoodActivity extends ActionBarActivity {
     /*
      * Preparing the list data
      */
-    private void prepareListData() {
+    private void prepareListData(String restaurantName) {
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
 
         // Adding child data
-        listDataHeader.add("Top 250");
-        listDataHeader.add("Now Showing");
-        listDataHeader.add("Coming Soon..");
+        listDataHeader.add("Food");
+        listDataHeader.add("Drink");
+        listDataHeader.add("Desert");
+        final List<String> headFood = new ArrayList<String>();
+        final List<String> headDrink = new ArrayList<String>();
+        final List<String> headDesert = new ArrayList<String>();
+        final List<String> headOther = new ArrayList<String>();
 
-        // Adding child data
-        List<String> top250 = new ArrayList<String>();
-        top250.add("The Shawshank Redemption");
-        top250.add("The Godfather");
-        top250.add("The Godfather: Part II");
-        top250.add("Pulp Fiction");
-        top250.add("The Good, the Bad and the Ugly");
-        top250.add("The Dark Knight");
-        top250.add("12 Angry Men");
+        // Find menus from Local
+        ParseQuery<Restaurant> restaurantQuery = ParseQuery.getQuery(Restaurant.class);
+        restaurantQuery.fromLocalDatastore();
+        restaurantQuery.whereEqualTo(Restaurant.NAME, restaurantName);
+        restaurantQuery.findInBackground(new FindCallback<Restaurant>() {
+            @Override
+            public void done(List<Restaurant> restaurants, ParseException e) {
+                if (e == null && restaurants.size() == 1) {
+                    // Find menuItems
+                    final ParseQuery<MenuItem> menuItemQuery = ParseQuery.getQuery(MenuItem.class);
+                    menuItemQuery.fromLocalDatastore();
+                    menuItemQuery.whereEqualTo(MenuItem.RESTAURANT, restaurants.get(0));
+                    menuItemQuery.findInBackground(new FindCallback<MenuItem>() {
+                        @Override
+                        public void done(List<MenuItem> menuItems, ParseException e) {
+                            if (e == null) {
+                                Log.i("Menu Items", "Size: " + menuItems.size());
+                                listOfMenuItem = menuItems;
+                                // Add each item to its category
+                                for(int i = 0; i < menuItems.size(); i++) {
+                                    String category = menuItems.get(i).getCategory();
+                                    String itemName = menuItems.get(i).getName();
+                                    if (category.equals(MenuItem.FOOD)) {
+                                        headFood.add(itemName);
+                                    }
+                                    else if (category.equals(MenuItem.DRINK)) {
+                                        headDrink.add(itemName);
+                                    }
+                                    else if (category.equals(MenuItem.DESSERT)) {
+                                        headDesert.add(itemName);
+                                    }
+                                    else {
+                                        listDataHeader.add("Others");
+                                        headOther.add(itemName);
+                                    }
+                                }
+                            }
+                            else {
+                                ErrorHelper.getInstance().promptError(SelectFoodActivity.this,
+                                        "Error", "Unable to read item for the menu...");
+                            }
+                        }
+                    });
+                } else {
+                    ErrorHelper.getInstance().promptError(SelectFoodActivity.this, "Error", "Unable " +
+                            "to read menu for the selected restaurant...");
+                }
+            }
+        });
 
-        List<String> nowShowing = new ArrayList<String>();
-        nowShowing.add("The Conjuring");
-        nowShowing.add("Despicable Me 2");
-        nowShowing.add("Turbo");
-        nowShowing.add("Grown Ups 2");
-        nowShowing.add("Red 2");
-        nowShowing.add("The Wolverine");
-
-        List<String> comingSoon = new ArrayList<String>();
-        comingSoon.add("2 Guns");
-        comingSoon.add("The Smurfs 2");
-        comingSoon.add("The Spectacular Now");
-        comingSoon.add("The Canyons");
-        comingSoon.add("Europa Report");
-
-        listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), nowShowing);
-        listDataChild.put(listDataHeader.get(2), comingSoon);
+        listDataChild.put(listDataHeader.get(0), headFood); // Header, Child data
+        listDataChild.put(listDataHeader.get(1), headDrink);
+        listDataChild.put(listDataHeader.get(2), headDesert);
+        // If nothing is in the "other" category, then no such head
+        if (headOther.size() > 0) {
+            listDataChild.put(listDataHeader.get(3), headOther);
+        }
     }
 
     @Override

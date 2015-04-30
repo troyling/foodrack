@@ -30,7 +30,12 @@ public class Item extends ParseObject {
         put("numOfItem", num);
     }
 
-    // !!!!!!!!!!!!!!!!! Test code, to be changed!!
+    public void setNotes(String notes) {
+        put("notes", notes);
+    }
+
+
+    // TODO Test code, to be changed!!
     public int getNumOfItems() {
         return 5;
         //To be changed below

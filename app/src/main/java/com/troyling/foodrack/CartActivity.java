@@ -67,7 +67,9 @@ public class CartActivity extends ActionBarActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
                 Intent intent = new Intent(CartActivity.this, ItemActivity.class);
+                //intent.putExtra(FOOD_NAME_MESSAGE, childName);
                 startActivity(intent);
 
             }

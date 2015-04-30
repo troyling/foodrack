@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Name of food"
-        android:id="@+id/textView33"
+        android:id="@+id/nameOfFood"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp" />
@@ -49,7 +49,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText8"
+        android:id="@+id/foodNotes"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
@@ -59,7 +59,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Continue"
-        android:id="@+id/button6"
+        android:id="@+id/buttonContinue"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp" />

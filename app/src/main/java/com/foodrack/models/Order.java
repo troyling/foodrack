@@ -1,6 +1,7 @@
 package com.foodrack.models;
 
 import com.parse.ParseClassName;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
@@ -13,6 +14,10 @@ import com.parse.ParseUser;
 
 @ParseClassName("Order")
 public class Order extends ParseObject {
+    public final static String STATUS_RECEIVED = "Received";
+    public final static String STATUS_CONFIRMED = "Confirmed";
+    public final static String STATUS_IN_TRANSIT = "In transit";
+    public final static String STATUS_DELIVERED = "Delivered";
 
     public Order() {
         super();
@@ -27,25 +32,25 @@ public class Order extends ParseObject {
     }
 
     // Use put to modify field values
-    public void setName(String name) {
-        put("orderName", name);
+    public void setStatus(String status) {
+        put("status", status);
     }
 
-    public String getName() {
-        return getString("orderName");
+    public String getStatus() {
+        return getString("status");
     }
 
-    public ParseRelation<Item> getItemRelation() {
+    public ParseRelation<Item> getItems() {
         return getRelation("item");
     }
 
     public void addItem(Item item) {
-        getItemRelation().add(item);
+        getItems().add(item);
         //saveInBackground();
     }
 
     public void removeItem(Item item) {
-        getItemRelation().remove(item);
+        getItems().remove(item);
         //saveInBackground();
     }
 
@@ -56,5 +61,23 @@ public class Order extends ParseObject {
     public boolean getIsPaid() {
         return getBoolean("isPaid");
     }
+
+    public void setAddressPoint(double latitude, double longitude) {
+        ParseGeoPoint point = new ParseGeoPoint(latitude, longitude);
+        put("AddressPoint", point);
+    }
+
+    public ParseGeoPoint getAddressPoint() {
+        return getParseGeoPoint("AddressPoint");
+    }
+
+    public void setNotes(String notes) {
+        put("notes", notes);
+    }
+
+    public String getNotes() {
+        return getString("notes");
+    }
+
 
 }
