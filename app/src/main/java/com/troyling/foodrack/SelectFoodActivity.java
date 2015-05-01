@@ -174,8 +174,8 @@ public class SelectFoodActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_select_food, menu);
 
         // update number of items in the cart
-        android.view.MenuItem itemView = (android.view.MenuItem) menu.findItem(R.id.action_view_cart);
-        itemView.setTitle("Cart (" + DataHelper.getInstance().getNumItemsInShoppingCart() + ")");
+        android.view.MenuItem item = (android.view.MenuItem) menu.findItem(R.id.action_view_cart);
+        item.setTitle("Cart (" + DataHelper.getInstance().getNumItemsInShoppingCart() + ")");
 
         return true;
     }
@@ -188,7 +188,10 @@ public class SelectFoodActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_view_cart) {
+            Intent intent = new Intent(this, AddressActivity.class);
+            startActivity(intent);
+
             return true;
         }
 
