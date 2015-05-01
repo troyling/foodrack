@@ -100,6 +100,11 @@ public class DataHelper {
         shoppingCart.pinInBackground(ORDERS);
     }
 
+    public void emptyShoppingCart() {
+        shoppingCart.unpinInBackground(ORDERS);
+        shoppingCart = new Order();
+    }
+
     private void syncMenuItemInBackground() {
         ParseQuery<MenuItem> menuItemQuery = ParseQuery.getQuery(MenuItem.class);
         menuItemQuery.include(MenuItem.RESTAURANT);

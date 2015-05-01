@@ -1,5 +1,7 @@
 package com.troyling.foodrack;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -10,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.braintreepayments.api.dropin.BraintreePaymentActivity;
 import com.foodrack.adapter.CartListAdapter;
@@ -59,7 +62,24 @@ public class CartActivity extends ActionBarActivity {
         taxTextView = (TextView) findViewById(R.id.textViewTax);
         deliveryTextView = (TextView) findViewById(R.id.textViewDelivery);
         totalTextView = (TextView) findViewById(R.id.textViewTotal);
+        payButton = (Button) this.findViewById(R.id.buttonPay);
 
+        payButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CartActivity.this, BraintreePaymentActivity.class);
+                intent.putExtra(BraintreePaymentActivity.EXTRA_CLIENT_TOKEN, clientToken);
+                startActivityForResult(intent, REQUEST_CODE);
+            }
+        });
+
+        loadShoppingCartToView();
+
+        // TODO token should be retrieved when the app is launched
+        getTokenFromServer();
+    }
+
+    private void loadShoppingCartToView() {
         Order cart = DataHelper.getInstance().getShoppingCart();
         ParseRelation<Item> itemRelation = cart.getItems();
 
@@ -80,7 +100,7 @@ public class CartActivity extends ActionBarActivity {
 
                         } else {
                             // cart is empty
-                            ErrorHelper.getInstance().promptError(CartActivity.this, "CartActivity", "cart is empty?");
+                            // TODO show view when cart is empty
                         }
                     } else {
                         // error reading local datastore
@@ -97,22 +117,10 @@ public class CartActivity extends ActionBarActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO add putextra here to pass essential info to the
                 Intent intent = new Intent(CartActivity.this, ItemActivity.class);
                 //intent.putExtra(FOOD_NAME_MESSAGE, childName);
                 startActivity(intent);
-
-            }
-        });
-
-        getTokenFromServer();
-
-        payButton = (Button) this.findViewById(R.id.buttonPay);
-        payButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CartActivity.this, BraintreePaymentActivity.class);
-                intent.putExtra(BraintreePaymentActivity.EXTRA_CLIENT_TOKEN, clientToken);
-                startActivityForResult(intent, REQUEST_CODE);
             }
         });
     }
@@ -184,7 +192,7 @@ public class CartActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_welcome, menu);
+        getMenuInflater().inflate(R.menu.menu_cart, menu);
         return true;
     }
 
@@ -217,7 +225,27 @@ public class CartActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_empty_cart) {
+            // alert user
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Remove everything in your shopping cart?").setPositiveButton("Empty", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    DataHelper.getInstance().emptyShoppingCart();
+                    loadShoppingCartToView();
+                    Toast.makeText(CartActivity.this, "Items have been removed from your cart.", Toast.LENGTH_SHORT).show();
+
+                    // TODO might be better way to reload the view
+                    startActivity(getIntent());
+                    finish();
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // Do nothing
+                }
+            });
+            builder.create().show();
             return true;
         }
 

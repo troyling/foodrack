@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.foodrack.helpers.DataHelper;
 import com.foodrack.helpers.ErrorHelper;
@@ -109,6 +110,7 @@ public class ItemActivity extends ActionBarActivity{
                             Order cart = DataHelper.getInstance().getShoppingCart();
                             cart.addItem(item);
                             DataHelper.getInstance().pinShoppingCartInBackground();
+                            Toast.makeText(ItemActivity.this, "Item has been added to your cart", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
