@@ -1,6 +1,7 @@
 package com.foodrack.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.foodrack.models.Item;
+import com.foodrack.models.MenuItem;
 import com.troyling.foodrack.R;
 
 import java.util.List;
@@ -42,26 +44,24 @@ public class CartListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Item entry = listItem.get(position);
+        Item item = listItem.get(position);
+        MenuItem menuItem = item.getMenuItem();
+        Log.i("CARTLISTADAPTER", "" + menuItem.getCategory());
+
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.cart_list_row, null);
         }
-        TextView itemName = (TextView) convertView.findViewById(R.id.cartItemName);
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // to be changed
-        //itemName.setText(entry.getMenuItem().getName());
-        itemName.setText(entry.getName());
 
+        TextView itemName = (TextView) convertView.findViewById(R.id.cartItemName);
+        itemName.setText(menuItem.getName());
 
         TextView itemQty = (TextView) convertView.findViewById(R.id.cartItemQty);
-        itemQty.setText(Integer.toString(entry.getNumOfItems()));
+        itemQty.setText(Integer.toString(item.getNumOfItems()));
 
         TextView itemPrice = (TextView) convertView.findViewById(R.id.cartItemPrice);
-        // To be changed to following
-        //itemPrice.setText(Double.toString(entry.getMenuItem().getPrice()));
-        itemPrice.setText("$" + Double.toString(entry.getPrice()));
+        itemPrice.setText("$" + Double.toString(menuItem.getPrice()));
 
         return convertView;
     }

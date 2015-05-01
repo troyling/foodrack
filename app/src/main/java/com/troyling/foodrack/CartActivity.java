@@ -5,24 +5,32 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.braintreepayments.api.dropin.BraintreePaymentActivity;
 import com.foodrack.adapter.CartListAdapter;
+import com.foodrack.helpers.DataHelper;
 import com.foodrack.helpers.ErrorHelper;
 import com.foodrack.models.Item;
+import com.foodrack.models.MenuItem;
+import com.foodrack.models.Order;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
 
 import org.apache.http.Header;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 /**
@@ -30,44 +38,65 @@ import java.util.List;
  */
 public class CartActivity extends ActionBarActivity {
     private final int REQUEST_CODE = 100;
+    private final double TAX_RATE_MASS = 0.0625;
+    private final double DELIVERY_RATE = 0.12;
+
     Button payButton;
     String clientToken;
+    ListView listView;
+    List<Item> items;
+
+    TextView taxTextView;
+    TextView deliveryTextView;
+    TextView totalTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart_layout);
 
-        ListView list = (ListView) findViewById(R.id.listView);
+        listView = (ListView) findViewById(R.id.listView);
+        taxTextView = (TextView) findViewById(R.id.textViewTax);
+        deliveryTextView = (TextView) findViewById(R.id.textViewDelivery);
+        totalTextView = (TextView) findViewById(R.id.textViewTotal);
 
-        List<Item> listOfItems = new ArrayList<Item>();
-        //!!!!!!!!!!!!!!!!!!!!
-        listOfItems.add(new Item());
-        listOfItems.add(new Item());
-        listOfItems.add(new Item());
-        listOfItems.add(new Item());
-        listOfItems.add(new Item());
-        listOfItems.add(new Item());
-        listOfItems.add(new Item());
-        listOfItems.add(new Item());
-        listOfItems.add(new Item());
-        listOfItems.add(new Item());
-        listOfItems.add(new Item());
-        listOfItems.add(new Item());
-        listOfItems.add(new Item());
-        listOfItems.add(new Item());
-        listOfItems.add(new Item());
-        listOfItems.add(new Item());
-        //!!!!!!!!!!!!!!!!!!!!!
+        Order cart = DataHelper.getInstance().getShoppingCart();
+        ParseRelation<Item> itemRelation = cart.getItems();
 
-        CartListAdapter adapter = new CartListAdapter(this, listOfItems);
+        if (itemRelation != null) {
+            ParseQuery<Item> itemQuery = itemRelation.getQuery();
+            itemQuery.include(Item.MENU_ITEM);
+            itemQuery.fromLocalDatastore();
+            itemQuery.findInBackground(new FindCallback<Item>() {
+                @Override
+                public void done(List<Item> itemList, ParseException e) {
+                    if (e == null) {
+                        if (itemList.size() > 0) {
+                            items = itemList;
+                            CartListAdapter adapter = new CartListAdapter(CartActivity.this, items);
+                            listView.setAdapter(adapter);
 
-        list.setAdapter(adapter);
-        list.setDividerHeight(0);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            calculateFee();
+
+                        } else {
+                            // cart is empty
+                            ErrorHelper.getInstance().promptError(CartActivity.this, "CartActivity", "cart is empty?");
+                        }
+                    } else {
+                        // error reading local datastore
+                        ErrorHelper.getInstance().promptError(CartActivity.this, "CartActivity", e.getMessage());
+                    }
+                }
+            });
+        } else {
+            // error??
+            ErrorHelper.getInstance().promptError(CartActivity.this, "CartActivity", "error?");
+        }
+
+        listView.setDividerHeight(0);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 Intent intent = new Intent(CartActivity.this, ItemActivity.class);
                 //intent.putExtra(FOOD_NAME_MESSAGE, childName);
                 startActivity(intent);
@@ -86,6 +115,43 @@ public class CartActivity extends ActionBarActivity {
                 startActivityForResult(intent, REQUEST_CODE);
             }
         });
+    }
+
+    private void calculateFee() {
+        double itemTotal = 0;
+        double tax = 0;
+        double deliveryFee = 0;
+        double total = 0;
+
+        for (Item i : items) {
+            MenuItem menuItem = i.getMenuItem();
+            double itemPrice = menuItem.getPrice();
+            int quantity = i.getNumOfItems();
+            itemTotal += itemPrice * quantity;
+        }
+
+        tax = round(TAX_RATE_MASS * itemTotal, 2);
+        deliveryFee = round(DELIVERY_RATE * itemTotal, 2);
+        total = round(itemTotal + tax + deliveryFee, 2);
+
+        // set view
+        taxTextView.setText(Double.toString(tax));
+        deliveryTextView.setText(Double.toString(deliveryFee));
+        totalTextView.setText((Double.toString(total)));
+    }
+
+    /**
+     * Round a given value to the given decimal
+     * @param value
+     * @param places
+     * @return the rounded number
+     */
+    private double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     private void getTokenFromServer() {
@@ -144,7 +210,7 @@ public class CartActivity extends ActionBarActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.

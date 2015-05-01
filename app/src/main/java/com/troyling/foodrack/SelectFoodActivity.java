@@ -8,18 +8,15 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 import com.foodrack.adapter.MenuExpandableListAdapter;
 import com.foodrack.helpers.ErrorHelper;
-import com.foodrack.models.Item;
 import com.foodrack.models.MenuItem;
 import com.foodrack.models.Order;
 import com.foodrack.models.Restaurant;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +30,7 @@ public class SelectFoodActivity extends ActionBarActivity {
     public final static String RESTAURANT_NAME = "RESTAURANT_NAME";
 
     public final static String FOOD_NAME_MESSAGE = "Foodrack.SelectFoodActivity.NameOfFood.MESSAGE";
-    public final static String MENUITEM_MESSAGE = "MenuItem.MESSAGE";
+    public final static String MENUITEM_OBJECTID = "MenuItem.MESSAGE";
 
     Order order;
     MenuItem menuItem;
@@ -54,14 +51,6 @@ public class SelectFoodActivity extends ActionBarActivity {
 
         // preparing list data
         prepareListData(restaurantName);
-
-        // New Order
-        order = new Order();
-        order.setOwner(ParseUser.getCurrentUser());
-        order.setIsPaid(false);
-        order.setStatus(Order.STATUS_RECEIVED);
-        order.pinInBackground();
-
 
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expandableListMenu);
@@ -87,7 +76,7 @@ public class SelectFoodActivity extends ActionBarActivity {
                         menuItem = listOfMenuItem.get(i);
                     }
                 }
-                intent.putExtra(MENUITEM_MESSAGE, menuItem);
+                intent.putExtra(MENUITEM_OBJECTID, menuItem.getObjectId());
                 startActivity(intent);
                 return false;
             }
@@ -158,7 +147,7 @@ public class SelectFoodActivity extends ActionBarActivity {
                             }
                             else {
                                 ErrorHelper.getInstance().promptError(SelectFoodActivity.this,
-                                        "Error", "Unable to read item for the menu...");
+                                        "Error", e.getMessage());
                             }
                         }
                     });

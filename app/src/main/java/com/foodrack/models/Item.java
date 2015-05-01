@@ -2,7 +2,6 @@ package com.foodrack.models;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
-import com.parse.ParseUser;
 
 /**
  * Created by ChandlerWu on 4/18/15.
@@ -34,19 +33,8 @@ public class Item extends ParseObject {
         put("notes", notes);
     }
 
-
-    // TODO Test code, to be changed!!
     public int getNumOfItems() {
-        return 5;
-        //To be changed below
-        //return getInt("numOfItem");
+        return getInt("numOfItem");
     }
 
-    public String getName() {
-        return "Ice Cream";
-    }
-
-    public double getPrice() {
-        return 8.69;
-    }
 }

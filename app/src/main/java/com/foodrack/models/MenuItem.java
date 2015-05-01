@@ -3,14 +3,12 @@ package com.foodrack.models;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
-import java.io.Serializable;
-
 /**
  * Menu Item is the model used to capture the business model
  */
 
 @ParseClassName("MenuItem")
-public class MenuItem extends ParseObject implements Serializable {
+public class MenuItem extends ParseObject {
     public final static String NAME = "name";
     public final static String PRICE = "price";
     public final static String CATEGORY = "category";

@@ -11,9 +11,14 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.foodrack.helpers.DataHelper;
+import com.foodrack.helpers.ErrorHelper;
 import com.foodrack.models.Item;
 import com.foodrack.models.MenuItem;
 import com.foodrack.models.Order;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 
 /**
  * Created by ChandlerWu on 4/29/15.
@@ -32,7 +37,21 @@ public class ItemActivity extends ActionBarActivity{
         String nameOfFood = intent.getStringExtra(SelectFoodActivity.FOOD_NAME_MESSAGE);
 
         // Get the menuItem
-        menuItem = (MenuItem) intent.getSerializableExtra(SelectFoodActivity.MENUITEM_MESSAGE);
+        String objectId = (String) intent.getSerializableExtra(SelectFoodActivity.MENUITEM_OBJECTID);
+
+        // load the menu item
+        ParseQuery<MenuItem> menuItemQuery = ParseQuery.getQuery(MenuItem.class);
+        menuItemQuery.fromLocalDatastore();
+        menuItemQuery.getInBackground(objectId, new GetCallback<MenuItem>() {
+            @Override
+            public void done(MenuItem mi, ParseException e) {
+                if (e == null) {
+                    menuItem = mi;
+                } else {
+                    ErrorHelper.getInstance().promptError(ItemActivity.this, "Error", e.getMessage());
+                }
+            }
+        });
 
         // Set the title of this layout
         TextView title = (TextView) findViewById(R.id.nameOfFood);
@@ -42,7 +61,7 @@ public class ItemActivity extends ActionBarActivity{
         np = (NumberPicker) findViewById(R.id.numberPicker);
         String[] nums = new String[20];
         for(int i=0; i<nums.length; i++)
-            nums[i] = Integer.toString(i);
+            nums[i] = Integer.toString(i + 1);
 
         np.setMinValue(1);
         np.setMaxValue(20);
@@ -77,15 +96,23 @@ public class ItemActivity extends ActionBarActivity{
             @Override
             public void onClick(View v) {
                 // Set the item
-                Item item = new Item();
-                item.setNumOfItems(np.getValue());
-                item.setNotes(notes.getText().toString());
-                item.setMenuItem(menuItem);
+                int numOfItems = np.getValue();
+                if (numOfItems > 0) {
+                    final Item item = new Item();
+                    item.setNumOfItems(numOfItems);
+                    item.setNotes(notes.getText().toString());
+                    item.setMenuItem(menuItem);
+                    item.pinInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            // Update Order
+                            Order cart = DataHelper.getInstance().getShoppingCart();
+                            cart.addItem(item);
+                            DataHelper.getInstance().pinShoppingCartInBackground();
+                        }
+                    });
+                }
 
-                // Update Order
-                Order cart = DataHelper.getInstance().getShoppingCart();
-                cart.addItem(item);
-                DataHelper.getInstance().pinShoppingCartInBackground();
                 finish();
             }
         });

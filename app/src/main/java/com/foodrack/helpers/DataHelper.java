@@ -63,6 +63,7 @@ public class DataHelper {
                         ParseRelation<Item> itemRelation = order.getItems();
                         if (itemRelation != null) {
                             ParseQuery<Item> itemQuery = order.getItems().getQuery();
+                            itemQuery.fromLocalDatastore();
                             itemQuery.findInBackground(new FindCallback<Item>() {
                                 @Override
                                 public void done(List<Item> items, ParseException e) {
