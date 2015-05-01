@@ -35,7 +35,6 @@ public class AddressActivity extends ActionBarActivity {
         setUpMapIfNeeded();
         Log.d("Maker's Old location", "is" + mMarker.getPosition().latitude + mMarker.getPosition().longitude);
 
-
         confirmButton = (Button)this.findViewById(R.id.buttonConfirm);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override

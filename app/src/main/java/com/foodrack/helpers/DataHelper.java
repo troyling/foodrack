@@ -25,6 +25,7 @@ public class DataHelper {
 
     private static DataHelper instance;
     private static Order shoppingCart;
+    private static int numItemsInShoppingCart;
 
     private DataHelper() {
 
@@ -82,27 +83,60 @@ public class DataHelper {
         });
     }
 
+    public int getNumItemsInShoppingCart() {
+        return numItemsInShoppingCart;
+    }
+
     /**
      * Get the shopping cart for current user
+     *
      * @return
      */
     public Order getShoppingCart() {
         if (shoppingCart == null) {
-            shoppingCart = new Order();
+            newShoppingCart();
         }
         return shoppingCart;
     }
 
-    /**
+    /*
      * Cache shopping cart locally
      */
     public void pinShoppingCartInBackground() {
         shoppingCart.pinInBackground(ORDERS);
+        updateNumItemsInShoppingCartInBackground();
     }
 
     public void emptyShoppingCart() {
         shoppingCart.unpinInBackground(ORDERS);
+        newShoppingCart();
+    }
+
+    private void newShoppingCart() {
         shoppingCart = new Order();
+        numItemsInShoppingCart = 0;
+    }
+
+    private void updateNumItemsInShoppingCartInBackground() {
+        numItemsInShoppingCart = 0;
+        Order order = getShoppingCart();
+        ParseRelation<Item> itemRelation = order.getItems();
+        if (itemRelation != null) {
+            ParseQuery<Item> itemQuery = itemRelation.getQuery();
+            itemQuery.fromLocalDatastore();
+            itemQuery.findInBackground(new FindCallback<Item>() {
+                @Override
+                public void done(List<Item> items, ParseException e) {
+                    if (e == null) {
+                        for (Item i : items) {
+                            numItemsInShoppingCart += i.getNumOfItems();
+                        }
+                    } else {
+                        Log.e("DataHelper", e.getMessage());
+                    }
+                }
+            });
+        }
     }
 
     private void syncMenuItemInBackground() {

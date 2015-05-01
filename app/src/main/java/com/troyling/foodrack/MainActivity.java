@@ -1,17 +1,15 @@
 package com.troyling.foodrack;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+
+import com.foodrack.helpers.DataHelper;
 
 
 public class MainActivity extends ActionBarActivity
@@ -93,8 +91,13 @@ public class MainActivity extends ActionBarActivity
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.main, menu);
+            getMenuInflater().inflate(R.menu.menu_select_food, menu);
             restoreActionBar();
+
+            // update number of items in the cart
+            android.view.MenuItem itemView = (android.view.MenuItem) menu.findItem(R.id.action_view_cart);
+            itemView.setTitle("Cart (" + DataHelper.getInstance().getNumItemsInShoppingCart() + ")");
+
             return true;
         }
         return super.onCreateOptionsMenu(menu);

@@ -34,5 +34,6 @@ public class FoodrackApp extends Application {
 
         // clear cached empty shopping cart
         DataHelper.getInstance().clearCachedOrderIfNecessary();
+
     }
 }
