@@ -6,6 +6,8 @@ import com.foodrack.models.Item;
 import com.foodrack.models.MenuItem;
 import com.foodrack.models.Order;
 import com.foodrack.models.Restaurant;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -13,12 +15,15 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 
+import org.apache.http.Header;
+
 import java.util.List;
 
 /**
  * This is an error class that follows singleton pattern
  */
 public class DataHelper {
+    private final static String TAG_DATA_HELPER_ERROR = "DataHelper";
     private final static String RESTAURANTS = "restaurants";
     private final static String MENU_ITEMS = "menuItems";
     private final static String ORDERS = "orders";
@@ -26,6 +31,7 @@ public class DataHelper {
     private static DataHelper instance;
     private static Order shoppingCart;
     private static int numItemsInShoppingCart;
+    private static String clientToken;          // token used for credit card precessing
 
     private DataHelper() {
 
@@ -34,9 +40,26 @@ public class DataHelper {
     public static DataHelper getInstance() {
         if (instance == null) {
             instance = new DataHelper();
+            clientToken = null;
+            getTokenFromServer();
         }
 
         return instance;
+    }
+
+    private static void getTokenFromServer() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get("https://foodrackserver.herokuapp.com/transaction/client_token", new TextHttpResponseHandler() {
+            @Override
+            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
+                Log.e("TAG_DATA_HELPER_ERROR", "Error connecting server...");
+            }
+
+            @Override
+            public void onSuccess(int i, Header[] headers, String s) {
+                clientToken = s;
+            }
+        });
     }
 
     public void syncDataInBackground() {
@@ -87,6 +110,10 @@ public class DataHelper {
         return numItemsInShoppingCart;
     }
 
+    public String getClientToken() {
+        return clientToken;
+    }
+
     /**
      * Get the shopping cart for current user
      *
@@ -132,7 +159,7 @@ public class DataHelper {
                             numItemsInShoppingCart += i.getNumOfItems();
                         }
                     } else {
-                        Log.e("DataHelper", e.getMessage());
+                        Log.e("TAG_DATA_HELPER_ERROR", e.getMessage());
                     }
                 }
             });
@@ -152,14 +179,14 @@ public class DataHelper {
                         public void done(ParseException e) {
                             if (e == null) {
                                 ParseObject.pinAllInBackground(MENU_ITEMS, menuItemList);
-                                Log.i("DATA_HELPER", "Save " + menuItemList.size() + " MENUS in localstore");
+                                Log.i("TAG_DATA_HELPER_ERROR", "Save " + menuItemList.size() + " MENUS in localstore");
                             } else {
-                                Log.e("DATA_HELPER", "Unable to save MENU data in localstore.");
+                                Log.e("TAG_DATA_HELPER_ERROR", "Unable to save MENU data in localstore.");
                             }
                         }
                     });
                 } else {
-                    Log.e("DATA_HELPER", "Unable to get MENU from backend.");
+                    Log.e("TAG_DATA_HELPER_ERROR", "Unable to get MENU from backend.");
                 }
             }
         });
@@ -177,14 +204,14 @@ public class DataHelper {
                         public void done(ParseException e) {
                             if (e == null) {
                                 ParseObject.pinAllInBackground(RESTAURANTS, restaurantList);
-                                Log.i("DATA_HELPER", "Save " + restaurantList.size() + " RESTAURANTS in localstore");
+                                Log.i("TAG_DATA_HELPER_ERROR", "Save " + restaurantList.size() + " RESTAURANTS in localstore");
                             } else {
-                                Log.e("DATA_HELPER", "Unable to save RESTAURANT data in localstore.");
+                                Log.e("TAG_DATA_HELPER_ERROR", "Unable to save RESTAURANT data in localstore.");
                             }
                         }
                     });
                 } else {
-                    Log.e("DATA_HELPER", "Unable to get RESTAURANT from backend.");
+                    Log.e("TAG_DATA_HELPER_ERROR", "Unable to get RESTAURANT from backend.");
                 }
             }
         });

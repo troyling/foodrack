@@ -73,24 +73,6 @@ public class ItemActivity extends ActionBarActivity{
         // Notes
         notes = (EditText) findViewById(R.id.foodNotes);
 
-//        // Query the order
-//        ParseQuery<Order> orderParseQuery = ParseQuery.getQuery(Order.class);
-//        orderParseQuery.fromLocalDatastore();
-//        orderParseQuery.findInBackground(new FindCallback<Order>() {
-//            @Override
-//            public void done(List<Order> orders, ParseException e) {
-//                if (e == null && orders.size() == 1) {
-//                    order = orders.get(0);
-//                }
-//                else {
-//                    ErrorHelper.getInstance().promptError(ItemActivity.this,"Order error",
-//                            "NO order found or more than one order");
-//                }
-//            }
-//        });
-
-        // TODO check if there is item in cart already
-
         // Continue button
         Button button = (Button) findViewById(R.id.buttonContinue);
         button.setOnClickListener(new View.OnClickListener() {

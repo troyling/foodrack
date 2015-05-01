@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,7 +23,6 @@ import com.foodrack.models.Order;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.loopj.android.http.TextHttpResponseHandler;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -53,6 +51,8 @@ public class CartActivity extends ActionBarActivity {
     TextView deliveryTextView;
     TextView totalTextView;
 
+    double payment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +64,8 @@ public class CartActivity extends ActionBarActivity {
         totalTextView = (TextView) findViewById(R.id.textViewTotal);
         payButton = (Button) this.findViewById(R.id.buttonPay);
 
+        clientToken = DataHelper.getInstance().getClientToken();
+
         payButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,9 +76,6 @@ public class CartActivity extends ActionBarActivity {
         });
 
         loadShoppingCartToView();
-
-        // TODO token should be retrieved when the app is launched
-        getTokenFromServer();
     }
 
     private void loadShoppingCartToView() {
@@ -129,7 +128,7 @@ public class CartActivity extends ActionBarActivity {
         double itemTotal = 0;
         double tax = 0;
         double deliveryFee = 0;
-        double total = 0;
+        payment = 0;
 
         for (Item i : items) {
             MenuItem menuItem = i.getMenuItem();
@@ -140,12 +139,12 @@ public class CartActivity extends ActionBarActivity {
 
         tax = round(TAX_RATE_MASS * itemTotal, 2);
         deliveryFee = round(DELIVERY_RATE * itemTotal, 2);
-        total = round(itemTotal + tax + deliveryFee, 2);
+        payment = round(itemTotal + tax + deliveryFee, 2);
 
         // set view
         taxTextView.setText(Double.toString(tax));
         deliveryTextView.setText(Double.toString(deliveryFee));
-        totalTextView.setText((Double.toString(total)));
+        totalTextView.setText((Double.toString(payment)));
     }
 
     /**
@@ -160,22 +159,6 @@ public class CartActivity extends ActionBarActivity {
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
-    }
-
-    private void getTokenFromServer() {
-        AsyncHttpClient client = new AsyncHttpClient();
-        client.get("https://foodrackserver.herokuapp.com/transaction/client_token", new TextHttpResponseHandler() {
-            @Override
-            public void onFailure(int i, Header[] headers, String s, Throwable throwable) {
-                Log.e("Error...", "Connecting server");
-            }
-
-            @Override
-            public void onSuccess(int i, Header[] headers, String s) {
-                clientToken = s;
-                ErrorHelper.getInstance().promptError(CartActivity.this, "Get", clientToken);
-            }
-        });
     }
 
     @Override
@@ -200,8 +183,7 @@ public class CartActivity extends ActionBarActivity {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         params.put("payment_method_nonce", paymentMethodNonce);
-        // TODO reflect the amount here
-        params.put("amount", 3);
+        params.put("amount", payment);
         client.post("https://foodrackserver.herokuapp.com/transaction/purchase", params,
             new AsyncHttpResponseHandler() {
                 @Override
