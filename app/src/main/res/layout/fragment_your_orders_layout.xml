@@ -18,9 +18,11 @@
         android:id="@+id/button2"
         android:layout_gravity="center_horizontal" />
 
-    <ExpandableListView
+    <ListView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/expandableListOrders"
-        android:layout_gravity="center_horizontal" />
+        android:layout_height="240dp"
+        android:id="@+id/orderListView"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 </LinearLayout>

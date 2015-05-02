@@ -2,6 +2,7 @@ package com.troyling.foodrack;
 
 import android.app.Application;
 
+import com.firebase.client.Firebase;
 import com.foodrack.helpers.DataHelper;
 import com.foodrack.models.Item;
 import com.foodrack.models.MenuItem;
@@ -21,6 +22,7 @@ public class FoodrackApp extends Application {
 
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
+        Firebase.setAndroidContext(this);
 
         // Register subclasses
         ParseObject.registerSubclass(MenuItem.class);
