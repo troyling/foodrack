@@ -1,30 +1,25 @@
 package com.troyling.foodrack;
 
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.foodrack.helpers.DataHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-
-import java.lang.annotation.Target;
 
 /**
  * Created by ChandlerWu on 4/17/15.
  */
 public class AddressActivity extends ActionBarActivity {
 
-    EditText addressET;
     EditText addressNotesET;
     String address;
     String addressNotes;
@@ -41,19 +36,22 @@ public class AddressActivity extends ActionBarActivity {
 
         setUpMapIfNeeded();
 
-        addressET = (EditText) this.findViewById(R.id.address);
         addressNotesET = (EditText) this.findViewById(R.id.addressNotes);
 
         confirmButton = (Button)this.findViewById(R.id.buttonConfirm);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                address = addressET.getText().toString();
                 addressNotes = addressNotesET.getText().toString();
                 LatLng camloc = mMap.getCameraPosition().target;
                 lat = camloc.latitude;
                 lng = camloc.longitude;
-                // TODO 
+
+                // save data to the shopping cart
+                DataHelper.getInstance().getShoppingCart().setDeliverLocation(lat, lng);
+                DataHelper.getInstance().getShoppingCart().setNotes(addressNotes);
+                DataHelper.getInstance().pinShoppingCartInBackground();
+
                 Intent intent = new Intent(AddressActivity.this, CartActivity.class);
                 startActivity(intent);
             }
