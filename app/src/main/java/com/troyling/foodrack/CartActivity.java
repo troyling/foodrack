@@ -3,8 +3,11 @@ package com.troyling.foodrack;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
@@ -32,16 +35,19 @@ import com.parse.SaveCallback;
 
 import org.apache.http.Header;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by ChandlerWu on 4/17/15.
  */
 public class CartActivity extends ActionBarActivity {
-    private final int PAYMENT_REQUEST_CODE = 100;
-    private final int LOCATION_REQUEST = 101;
+    private static final int PAYMENT_REQUEST_CODE = 100;
+    public static final int LOCATION_REQUEST = 101;
     private final double TAX_RATE_MASS = 0.0625;
     private final double DELIVERY_RATE = 0.12;
 
@@ -81,6 +87,7 @@ public class CartActivity extends ActionBarActivity {
                 startActivityForResult(intent, LOCATION_REQUEST);
             }
         });
+
 
         payButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,6 +152,16 @@ public class CartActivity extends ActionBarActivity {
     private void setPayButtonVisibleIfNecessary() {
         if (DataHelper.getInstance().getShoppingCart().getDeliverLocation() != null) {
             payButton.setVisibility(View.VISIBLE);
+
+            // Find address based on lat and lng
+            try {
+                double lng = DataHelper.getInstance().getShoppingCart().getDeliverLocation().getLongitude();
+                double lat = DataHelper.getInstance().getShoppingCart().getDeliverLocation().getLatitude();
+                // Set the button name with the address
+                locationButton.setText(getGeoAddress(lat, lng));
+            } catch (NullPointerException nullExp) {
+                Log.d("Address", "Address has not been set");
+            }
         } else {
             payButton.setVisibility(View.GONE);
         }
@@ -316,5 +333,49 @@ public class CartActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public String getGeoAddress(double lat, double lng) {
+        String TAG = "getAddresssNameError";
+        String errorMessage = "no addresss";
+        String r = " ";
+
+        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+
+        List<Address> addresses = null;
+
+        try {
+            addresses = geocoder.getFromLocation(lat,lng,1);
+        } catch (IOException ioException) {
+            Log.e(TAG, errorMessage, ioException);
+        } catch (IllegalArgumentException illegalArgumentException) {
+            // Catch invalid latitude or longitude values.
+            Log.e(TAG, errorMessage + ". " +
+                    "Latitude = " + lat +
+                    ", Longitude = " +
+                    lng, illegalArgumentException);
+        }
+
+        // Handle case where no address was found.
+        if (addresses == null || addresses.size()  == 0) {
+            if (errorMessage.isEmpty()) {
+                errorMessage = "no address";
+                Log.e(TAG, errorMessage);
+                r = "No address found";
+            }
+        } else {
+            Address address = addresses.get(0);
+            ArrayList<String> addressFragments = new ArrayList<String>();
+
+            // Fetch the address lines using getAddressLine,
+            // join them, and send them to the thread.
+            for(int i = address.getMaxAddressLineIndex(); i > 0; i--) {
+                addressFragments.add(address.getAddressLine(i));
+                Log.d("address!!!!!!!", address.getAddressLine(i));
+                r = address.getAddressLine(i) + " " + r;
+            }
+        }
+        return r;
     }
 }

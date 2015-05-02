@@ -52,8 +52,8 @@ public class AddressActivity extends ActionBarActivity {
                 DataHelper.getInstance().getShoppingCart().setNotes(addressNotes);
                 DataHelper.getInstance().pinShoppingCartInBackground();
 
-                Intent intent = new Intent(AddressActivity.this, CartActivity.class);
-                startActivity(intent);
+                setResult(CartActivity.LOCATION_REQUEST);
+                finish();
             }
         });
     }
