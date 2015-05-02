@@ -27,6 +27,7 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
+import com.parse.SaveCallback;
 
 import org.apache.http.Header;
 
@@ -50,6 +51,8 @@ public class CartActivity extends ActionBarActivity {
     TextView taxTextView;
     TextView deliveryTextView;
     TextView totalTextView;
+
+    int savedItemCount;
 
     double payment;
 
@@ -166,7 +169,6 @@ public class CartActivity extends ActionBarActivity {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == BraintreePaymentActivity.RESULT_OK) {
                 String paymentMethodNonce = data.getStringExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE);
-                ErrorHelper.getInstance().promptError(this, "Nonce", paymentMethodNonce);
                 postNonceToServer(paymentMethodNonce);
             }
         }
@@ -179,24 +181,77 @@ public class CartActivity extends ActionBarActivity {
         return true;
     }
 
-    private void postNonceToServer(String paymentMethodNonce) {
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
+    private void postNonceToServer(final String paymentMethodNonce) {
+        savedItemCount = 0;
+
+        // upload the order to backend
+        final Order newOrder = DataHelper.getInstance().getShoppingCart();
+
+        ParseRelation<Item> itemRelation = newOrder.getItems();
+        if (itemRelation != null) {
+            ParseQuery<Item> query = itemRelation.getQuery();
+            query.fromLocalDatastore();
+            query.findInBackground(new FindCallback<Item>() {
+                @Override
+                public void done(final List<Item> items, ParseException e) {
+                    if (e == null) {
+                        for (Item i : items) {
+                            i.saveEventually(new SaveCallback() {
+                                @Override
+                                public void done(ParseException e) {
+                                    savedItemCount++;
+                                    if (savedItemCount == items.size()) {
+                                        // all items have been saved
+                                        placeOrder(newOrder, paymentMethodNonce);
+                                    }
+                                }
+                            });
+                        }
+                    } else {
+                        // TODO log Error
+                    }
+                }
+            });
+        }
+    }
+
+    private void placeOrder(Order newOrder, String paymentMethodNonce) {
+        final AsyncHttpClient client = new AsyncHttpClient();
+        final RequestParams params = new RequestParams();
         params.put("payment_method_nonce", paymentMethodNonce);
         params.put("amount", payment);
-        client.post("https://foodrackserver.herokuapp.com/transaction/purchase", params,
-            new AsyncHttpResponseHandler() {
-                @Override
-                public void onSuccess(int i, Header[] headers, byte[] bytes) {
-                    ErrorHelper.getInstance().promptError(CartActivity.this, "Success", "Successfully processed credit card.");
-                }
 
-                @Override
-                public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-                    ErrorHelper.getInstance().promptError(CartActivity.this, "Fail", throwable.getMessage());
+        newOrder.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    // process payment
+                    client.post("https://foodrackserver.herokuapp.com/transaction/purchase", params,
+                            new AsyncHttpResponseHandler() {
+                                @Override
+                                public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                                    Toast.makeText(CartActivity.this, "Successfully process your payment. Thank you.", Toast.LENGTH_LONG);
+
+                                    // empty shopping cart
+                                    DataHelper.getInstance().emptyShoppingCart();
+
+                                    //Todo jump to activity to show status view with status update
+                                    Intent intent = new Intent(CartActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+
+                                @Override
+                                public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+                                    ErrorHelper.getInstance().promptError(CartActivity.this, "Fail", throwable.getMessage());
+                                }
+                            }
+                    );
+                } else {
+                    ErrorHelper.getInstance().promptError(CartActivity.this, "Error", e.getMessage());
                 }
             }
-        );
+        });
     }
 
     @Override
