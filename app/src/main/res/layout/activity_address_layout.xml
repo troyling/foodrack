@@ -37,11 +37,13 @@
             android:layout_centerHorizontal="true"/>
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="55dp"
+            android:layout_height="50dp"
             android:id="@+id/imageView"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:background="@drawable/f"
+            android:layout_alignTop="@+id/mapAddress"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="98dp" />
     </RelativeLayout>
 
     <EditText
@@ -49,7 +51,7 @@
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"
         android:ems="10"
-        android:id="@+id/editText"
+        android:id="@+id/address"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
@@ -58,7 +60,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editText6"
+        android:id="@+id/addressNotes"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
