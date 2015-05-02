@@ -6,7 +6,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ExpandableListView;
 
 import com.foodrack.adapter.MenuExpandableListAdapter;
@@ -39,7 +38,6 @@ public class SelectFoodActivity extends ActionBarActivity {
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
-    Button orderButton;
     List<MenuItem> listOfMenuItem;
 
     @Override
@@ -80,15 +78,6 @@ public class SelectFoodActivity extends ActionBarActivity {
                 intent.putExtra(MENUITEM_OBJECTID, menuItem.getObjectId());
                 startActivity(intent);
                 return false;
-            }
-        });
-
-        orderButton = (Button) findViewById(R.id.buttonOrder);
-        orderButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SelectFoodActivity.this, AddressActivity.class);
-                startActivity(intent);
             }
         });
     }

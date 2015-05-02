@@ -33,9 +33,7 @@ public class DataHelper {
     private static int numItemsInShoppingCart;
     private static String clientToken;          // token used for credit card precessing
 
-    private DataHelper() {
-
-    }
+    private DataHelper() {}
 
     public static DataHelper getInstance() {
         if (instance == null) {
@@ -43,7 +41,6 @@ public class DataHelper {
             clientToken = null;
             getTokenFromServer();
         }
-
         return instance;
     }
 
