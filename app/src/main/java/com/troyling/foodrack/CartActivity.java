@@ -27,6 +27,7 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.apache.http.Header;
@@ -39,11 +40,14 @@ import java.util.List;
  * Created by ChandlerWu on 4/17/15.
  */
 public class CartActivity extends ActionBarActivity {
-    private final int REQUEST_CODE = 100;
+    private final int PAYMENT_REQUEST_CODE = 100;
+    private final int LOCATION_REQUEST = 101;
     private final double TAX_RATE_MASS = 0.0625;
     private final double DELIVERY_RATE = 0.12;
 
+    // view
     Button payButton;
+    Button locationButton;
     String clientToken;
     ListView listView;
     List<Item> items;
@@ -65,18 +69,29 @@ public class CartActivity extends ActionBarActivity {
         taxTextView = (TextView) findViewById(R.id.textViewTax);
         deliveryTextView = (TextView) findViewById(R.id.textViewDelivery);
         totalTextView = (TextView) findViewById(R.id.textViewTotal);
-        payButton = (Button) this.findViewById(R.id.buttonPay);
+        payButton = (Button) findViewById(R.id.buttonPay);
+        locationButton = (Button) findViewById(R.id.buttonSetLocation);
 
         clientToken = DataHelper.getInstance().getClientToken();
+
+        locationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CartActivity.this, AddressActivity.class);
+                startActivityForResult(intent, LOCATION_REQUEST);
+            }
+        });
 
         payButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(CartActivity.this, BraintreePaymentActivity.class);
                 intent.putExtra(BraintreePaymentActivity.EXTRA_CLIENT_TOKEN, clientToken);
-                startActivityForResult(intent, REQUEST_CODE);
+                startActivityForResult(intent, PAYMENT_REQUEST_CODE);
             }
         });
+
+        setPayButtonVisibleIfNecessary();
 
         loadShoppingCartToView();
     }
@@ -127,6 +142,14 @@ public class CartActivity extends ActionBarActivity {
         });
     }
 
+    private void setPayButtonVisibleIfNecessary() {
+        if (DataHelper.getInstance().getShoppingCart().getDeliverLocation() != null) {
+            payButton.setVisibility(View.VISIBLE);
+        } else {
+            payButton.setVisibility(View.GONE);
+        }
+    }
+
     private void calculateFee() {
         double itemTotal = 0;
         double tax = 0;
@@ -152,6 +175,7 @@ public class CartActivity extends ActionBarActivity {
 
     /**
      * Round a given value to the given decimal
+     *
      * @param value
      * @param places
      * @return the rounded number
@@ -166,11 +190,13 @@ public class CartActivity extends ActionBarActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == PAYMENT_REQUEST_CODE) {
             if (resultCode == BraintreePaymentActivity.RESULT_OK) {
                 String paymentMethodNonce = data.getStringExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE);
                 postNonceToServer(paymentMethodNonce);
             }
+        } else if (resultCode == LOCATION_REQUEST) {
+            setPayButtonVisibleIfNecessary();
         }
     }
 
@@ -187,31 +213,38 @@ public class CartActivity extends ActionBarActivity {
         // upload the order to backend
         final Order newOrder = DataHelper.getInstance().getShoppingCart();
 
-        ParseRelation<Item> itemRelation = newOrder.getItems();
-        if (itemRelation != null) {
-            ParseQuery<Item> query = itemRelation.getQuery();
-            query.fromLocalDatastore();
-            query.findInBackground(new FindCallback<Item>() {
-                @Override
-                public void done(final List<Item> items, ParseException e) {
-                    if (e == null) {
-                        for (Item i : items) {
-                            i.saveEventually(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    savedItemCount++;
-                                    if (savedItemCount == items.size()) {
-                                        // all items have been saved
-                                        placeOrder(newOrder, paymentMethodNonce);
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            newOrder.setOwner(currentUser);
+            newOrder.setStatus(Order.STATUS_RECEIVED);
+            ParseRelation<Item> itemRelation = newOrder.getItems();
+            if (itemRelation != null) {
+                ParseQuery<Item> query = itemRelation.getQuery();
+                query.fromLocalDatastore();
+                query.findInBackground(new FindCallback<Item>() {
+                    @Override
+                    public void done(final List<Item> items, ParseException e) {
+                        if (e == null) {
+                            for (Item i : items) {
+                                i.saveEventually(new SaveCallback() {
+                                    @Override
+                                    public void done(ParseException e) {
+                                        savedItemCount++;
+                                        if (savedItemCount == items.size()) {
+                                            // all items have been saved
+                                            placeOrder(newOrder, paymentMethodNonce);
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
+                        } else {
+                            // TODO log Error
                         }
-                    } else {
-                        // TODO log Error
                     }
-                }
-            });
+                });
+            }
+        } else {
+            ErrorHelper.getInstance().promptError(this, "Error", "Please make sure you have signed in before placing an order.");
         }
     }
 
@@ -256,12 +289,8 @@ public class CartActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_empty_cart) {
             // alert user
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

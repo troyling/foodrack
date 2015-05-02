@@ -19,6 +19,7 @@ public class Order extends ParseObject {
     public final static String STATUS_CONFIRMED = "Confirmed";
     public final static String STATUS_IN_TRANSIT = "In transit";
     public final static String STATUS_DELIVERED = "Delivered";
+    public final static String DELIVER_LOCATION = "DeliverLocation";
 
     public Order() {
         super();
@@ -63,13 +64,13 @@ public class Order extends ParseObject {
         return getBoolean("isPaid");
     }
 
-    public void setAddressPoint(double latitude, double longitude) {
+    public void setDeliverLocation(double latitude, double longitude) {
         ParseGeoPoint point = new ParseGeoPoint(latitude, longitude);
-        put("AddressPoint", point);
+        put(DELIVER_LOCATION, point);
     }
 
-    public ParseGeoPoint getAddressPoint() {
-        return getParseGeoPoint("AddressPoint");
+    public ParseGeoPoint getDeliverLocation() {
+        return getParseGeoPoint(DELIVER_LOCATION);
     }
 
     public void setNotes(String notes) {

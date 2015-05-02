@@ -116,7 +116,7 @@ public class MainActivity extends ActionBarActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_view_cart) {
-            Intent intent = new Intent(this, AddressActivity.class);
+            Intent intent = new Intent(this, CartActivity.class);
             startActivity(intent);
 
             return true;
