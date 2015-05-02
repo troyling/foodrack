@@ -22,35 +22,43 @@ public class AdminListActivity extends ActionBarActivity {
 
     Button buttonRefresh;
     ListView listView;
-    List<Order> listOfOrder;
+    List<Order> orders;
     OrderListAdapter adapter;
+    ParseQuery<Order> allOrders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_order_list);
 
-
         // Find orders in back ground
         listView = (ListView)this.findViewById(R.id.listOfOrders);
-        ParseQuery<Order> myOrders = ParseQuery.getQuery(Order.class);
-        myOrders.findInBackground(new FindCallback<Order>() {
+        buttonRefresh = (Button)this.findViewById(R.id.buttonRefresh);
+
+        allOrders = ParseQuery.getQuery(Order.class);
+        allOrders.whereNotEqualTo("status", Order.STATUS_DELIVERED);
+        fetchOrders();
+        // refresh listener
+
+        buttonRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void done(List<Order> orders, ParseException e) {
+            public void onClick(View v) {
+                fetchOrders();
+            }
+        });
+    }
+
+    private void fetchOrders() {
+        allOrders.findInBackground(new FindCallback<Order>() {
+            @Override
+            public void done(List<Order> orderList, ParseException e) {
                 if (e == null) {
+                    orders = orderList;
                     adapter = new OrderListAdapter(AdminListActivity.this, orders);
                     listView.setAdapter(adapter);
                 } else {
                     ErrorHelper.getInstance().promptError(AdminListActivity.this, "Error connecting to backend", "Unable to find your orders now. Please try again later.");
                 }
-            }
-        });
-
-        buttonRefresh = (Button)this.findViewById(R.id.buttonRefresh);
-        buttonRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO Sync orders
             }
         });
     }
