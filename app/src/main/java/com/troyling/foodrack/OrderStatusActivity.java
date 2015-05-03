@@ -1,13 +1,9 @@
 package com.troyling.foodrack;
 
-import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -55,21 +51,28 @@ public class OrderStatusActivity extends ActionBarActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot != null) {
-                    // update map
-                    Map<String, Object> location = (Map<String, Object>) dataSnapshot.getValue();
-                    double lat = (double) location.get("lat");
-                    double lng = (double) location.get("lng");
-                    LatLng ll = new LatLng(lat, lng);
+                    try {
+                        // update map
+                        Map<String, Object> location = (Map<String, Object>) dataSnapshot.getValue();
+                        double lat,lng = 0;
 
-                    if (marker == null) {
-                        marker = mMap.addMarker(new MarkerOptions().position(ll).title("Deliver Guy")
-                                .draggable(false).icon(BitmapDescriptorFactory
-                                .fromResource(R.drawable.android_red2)));
-                    } else {
-                        marker.setPosition(ll);
+                        lat = (double) location.get("lat");
+                        lng = (double) location.get("lng");
+                        LatLng ll = new LatLng(lat, lng);
+
+                        if (marker == null) {
+                            marker = mMap.addMarker(new MarkerOptions().position(ll).title("Deliver Guy")
+                                    .draggable(false).icon(BitmapDescriptorFactory
+                                            .fromResource(R.drawable.android_red2)));
+                        } else {
+                            marker.setPosition(ll);
+                        }
+
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 16));
+
+                    } catch (NullPointerException nullExp) {
+                        Log.d("Null pointer", "No data from DataSnapshot");
                     }
-
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 16));
                 }
             }
 
@@ -104,9 +107,13 @@ public class OrderStatusActivity extends ActionBarActivity {
             @Override
             public void done(Order order, ParseException e) {
                 if (e == null) {
-                    LatLng deliverLl = new LatLng(order.getDeliverLocation().getLatitude(), order.
-                            getDeliverLocation().getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(deliverLl).title("Deliver location"));
+                    try {
+                        LatLng deliverLl = new LatLng(order.getDeliverLocation().getLatitude(), order.
+                                getDeliverLocation().getLongitude());
+                        mMap.addMarker(new MarkerOptions().position(deliverLl).title("Deliver location"));
+                    } catch (NullPointerException nullExp) {
+                        Log.d("Null pointer", "No data from DataSnapshot");
+                    }
                 } else {
                     ErrorHelper.getInstance().promptError(OrderStatusActivity.this, "Error",
                             "Unable to fetch data of your order. Please try again later.");
