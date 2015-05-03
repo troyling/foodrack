@@ -54,7 +54,7 @@ public class OrderListAdapter extends BaseAdapter {
         TextView orderTime = (TextView) convertView.findViewById(R.id.textTime);
         orderTime.setText(order.getCreatedAt().toString());
         TextView orderStatus = (TextView) convertView.findViewById(R.id.textStatus);
-        orderStatus.setText(order.getStatus().toString());
+        orderStatus.setText(order.getStatus());
 
         return convertView;
     }
