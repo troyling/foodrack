@@ -320,7 +320,7 @@ public class CartActivity extends ActionBarActivity {
         if (id == R.id.action_empty_cart) {
             // alert user
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Remove everything in your shopping cart?").setPositiveButton("Empty", new DialogInterface.OnClickListener() {
+            builder.setMessage("Remove everything in your shopping cart?").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     DataHelper.getInstance().emptyShoppingCart();
