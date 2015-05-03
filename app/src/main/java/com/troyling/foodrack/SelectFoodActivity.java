@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.ExpandableListView;
 
 import com.foodrack.adapter.MenuExpandableListAdapter;
-import com.foodrack.helpers.DataHelper;
 import com.foodrack.helpers.ErrorHelper;
 import com.foodrack.models.MenuItem;
 import com.foodrack.models.Order;
@@ -161,11 +160,6 @@ public class SelectFoodActivity extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_select_food, menu);
-
-        // update number of items in the cart
-        android.view.MenuItem item = (android.view.MenuItem) menu.findItem(R.id.action_view_cart);
-        item.setTitle("Cart (" + DataHelper.getInstance().getNumItemsInShoppingCart() + ")");
-
         return true;
     }
 

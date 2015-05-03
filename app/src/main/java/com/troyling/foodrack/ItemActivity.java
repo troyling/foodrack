@@ -106,11 +106,6 @@ public class ItemActivity extends ActionBarActivity{
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_select_food, menu);
-
-        // update number of items in the cart
-        android.view.MenuItem item = (android.view.MenuItem) menu.findItem(R.id.action_view_cart);
-        item.setTitle("Cart (" + DataHelper.getInstance().getNumItemsInShoppingCart() + ")");
-
         return true;
     }
 

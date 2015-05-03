@@ -11,8 +11,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.foodrack.helpers.DataHelper;
-
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -97,11 +95,6 @@ public class MainActivity extends ActionBarActivity
             // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.menu_select_food, menu);
             restoreActionBar();
-
-            // update number of items in the cart
-            android.view.MenuItem item = (android.view.MenuItem) menu.findItem(R.id.action_view_cart);
-            item.setTitle("Cart (" + DataHelper.getInstance().getNumItemsInShoppingCart() + ")");
-
             return true;
         }
         return super.onCreateOptionsMenu(menu);
