@@ -1,8 +1,10 @@
 package com.troyling.foodrack;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -38,12 +40,23 @@ public class AdminListActivity extends ActionBarActivity {
         allOrders = ParseQuery.getQuery(Order.class);
         allOrders.whereNotEqualTo("status", Order.STATUS_DELIVERED);
         fetchOrders();
-        // refresh listener
 
+        // refresh listener
         buttonRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fetchOrders();
+            }
+        });
+
+        listView.setDividerHeight(0);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(AdminListActivity.this, AdminMapActivity.class);
+                Order order = (Order) adapter.getItem(position);
+                intent.putExtra(AdminMapActivity.ORDER_OBJECTID, order.getObjectId());
+                startActivity(intent);
             }
         });
     }
