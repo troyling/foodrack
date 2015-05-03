@@ -136,6 +136,14 @@ public class DataHelper {
         newShoppingCart();
     }
 
+    public void removeItemFromShoppingCart(Item item) {
+        ParseRelation<Item> relation = shoppingCart.getItems();
+        if (relation != null) {
+            relation.remove(item);
+        }
+        pinShoppingCartInBackground();
+    }
+
     private void newShoppingCart() {
         shoppingCart = new Order();
         numItemsInShoppingCart = 0;

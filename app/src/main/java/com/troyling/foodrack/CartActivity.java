@@ -63,6 +63,7 @@ public class CartActivity extends ActionBarActivity {
     TextView totalTextView;
 
     int savedItemCount;
+    CartListAdapter adapter;
 
     double payment;
 
@@ -117,7 +118,7 @@ public class CartActivity extends ActionBarActivity {
                     if (e == null) {
                         if (itemList.size() > 0) {
                             items = itemList;
-                            CartListAdapter adapter = new CartListAdapter(CartActivity.this, items);
+                            adapter = new CartListAdapter(CartActivity.this, items);
                             listView.setAdapter(adapter);
 
                             calculateFee();
@@ -140,11 +141,19 @@ public class CartActivity extends ActionBarActivity {
         listView.setDividerHeight(0);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO add putextra here to pass essential info to the
-                Intent intent = new Intent(CartActivity.this, ItemActivity.class);
-                //intent.putExtra(FOOD_NAME_MESSAGE, childName);
-                startActivity(intent);
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                new AlertDialog.Builder(CartActivity.this).setMessage("Are you sure you want to remove the select item?")
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {}
+                        }).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Item item = (Item) adapter.getItem(position);
+                        DataHelper.getInstance().removeItemFromShoppingCart(item);
+                        loadShoppingCartToView();
+                    }
+                }).show();
             }
         });
     }
@@ -346,7 +355,7 @@ public class CartActivity extends ActionBarActivity {
         List<Address> addresses = null;
 
         try {
-            addresses = geocoder.getFromLocation(lat,lng,1);
+            addresses = geocoder.getFromLocation(lat, lng, 1);
         } catch (IOException ioException) {
             Log.e(TAG, errorMessage, ioException);
         } catch (IllegalArgumentException illegalArgumentException) {
@@ -358,7 +367,7 @@ public class CartActivity extends ActionBarActivity {
         }
 
         // Handle case where no address was found.
-        if (addresses == null || addresses.size()  == 0) {
+        if (addresses == null || addresses.size() == 0) {
             if (errorMessage.isEmpty()) {
                 errorMessage = "no address";
                 Log.e(TAG, errorMessage);
@@ -370,7 +379,7 @@ public class CartActivity extends ActionBarActivity {
 
             // Fetch the address lines using getAddressLine,
             // join them, and send them to the thread.
-            for(int i = address.getMaxAddressLineIndex(); i > 0; i--) {
+            for (int i = address.getMaxAddressLineIndex(); i > 0; i--) {
                 addressFragments.add(address.getAddressLine(i));
                 Log.d("address!!!!!!!", address.getAddressLine(i));
                 r = address.getAddressLine(i) + " " + r;
