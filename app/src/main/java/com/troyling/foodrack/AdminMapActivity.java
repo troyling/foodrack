@@ -59,6 +59,7 @@ public class AdminMapActivity extends ActionBarActivity {
                 // TODO set button functions
                 locationRef.child("status").setValue(Order.STATUS_IN_TRANSIT);
                 isLocationShared = true;
+                Toast.makeText(getApplicationContext(), "Your current location is now being shared with the customer.", Toast.LENGTH_SHORT);
             }
         });
 

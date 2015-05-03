@@ -1,9 +1,12 @@
 package com.troyling.foodrack;
 
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
@@ -15,20 +18,27 @@ import com.foodrack.models.Order;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 
+import java.util.Map;
+
 /**
  * Created by ChandlerWu on 4/23/15.
  */
-public class OrderStatusActivity extends FragmentActivity {
+public class OrderStatusActivity extends ActionBarActivity {
     public final static String ORDER_OBJECTID = "objectId";
     private GoogleMap mMap;
 
+    TextView textOrderStatus;
     private Firebase locationRef;
     private Firebase statusRef;
+    private Marker marker = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,15 +47,29 @@ public class OrderStatusActivity extends FragmentActivity {
 
         String orderObjectId = getIntent().getStringExtra(ORDER_OBJECTID);
 
+        textOrderStatus = (TextView) findViewById(R.id.textOrderStatus);
 
         // location listener
         locationRef = new Firebase(AdminMapActivity.FIRE_BASE_URL + orderObjectId + "/location");
         locationRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // TODO change location on the map
                 if (dataSnapshot != null) {
-//                    Toast.makeText(getApplicationContext(), dataSnapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
+                    // update map
+                    Map<String, Object> location = (Map<String, Object>) dataSnapshot.getValue();
+                    double lat = (double) location.get("lat");
+                    double lng = (double) location.get("lng");
+                    LatLng ll = new LatLng(lat, lng);
+
+                    if (marker == null) {
+                        marker = mMap.addMarker(new MarkerOptions().position(ll).title("Deliver Guy")
+                                .draggable(false).icon(BitmapDescriptorFactory
+                                .fromResource(R.drawable.android_red2)));
+                    } else {
+                        marker.setPosition(ll);
+                    }
+
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 16));
                 }
             }
 
@@ -62,6 +86,8 @@ public class OrderStatusActivity extends FragmentActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // TODO change the status of the order
                 if (dataSnapshot != null) {
+                    String status = (String)dataSnapshot.getValue();
+                    textOrderStatus.setText(status);
 //                    Toast.makeText(getApplicationContext(), dataSnapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -78,9 +104,12 @@ public class OrderStatusActivity extends FragmentActivity {
             @Override
             public void done(Order order, ParseException e) {
                 if (e == null) {
-                    Toast.makeText(getApplicationContext(), "Fetched", Toast.LENGTH_LONG).show();
+                    LatLng deliverLl = new LatLng(order.getDeliverLocation().getLatitude(), order.
+                            getDeliverLocation().getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(deliverLl).title("Deliver location"));
                 } else {
-                    ErrorHelper.getInstance().promptError(OrderStatusActivity.this, "Error", "Unable to fetch data of your order. Please try again later.");
+                    ErrorHelper.getInstance().promptError(OrderStatusActivity.this, "Error",
+                            "Unable to fetch data of your order. Please try again later.");
                 }
             }
         });
@@ -111,19 +140,5 @@ public class OrderStatusActivity extends FragmentActivity {
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
         mMap.getMyLocation();
         //mMap.getUiSettings().setAllGesturesEnabled(false);
-
-        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-            @Override
-            public void onMyLocationChange(Location location) {
-                if (location != null) {
-                    LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ll, 16));
-                } else {
-                    Log.i("hi", "No location");
-                    Toast toast = Toast.makeText(getApplicationContext(), "Location is currently not available.", Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            }
-        });
     }
 }

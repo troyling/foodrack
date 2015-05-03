@@ -17,18 +17,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Your food is on the way to XXX, and will arrive at approximately 00:00"
+        android:text="Deliver locaiton is shown on the map. We will let you know where your food is once it is being delivered."
         android:id="@+id/textView25"
         android:layout_gravity="center"
-        android:gravity="center_vertical|center_horizontal" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Your foods' location"
-        android:id="@+id/textView20"
-        android:layout_marginLeft="20dp" />
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="10dp" />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/map"
@@ -49,20 +44,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Received!"
-            android:id="@+id/textView21"
+            android:text="Order Received"
+            android:id="@+id/textOrderStatus"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:layout_weight="1" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="00:00"
-            android:id="@+id/textView26"
-            android:gravity="right"
-            android:layout_weight="0" />
     </LinearLayout>
 
     <LinearLayout
@@ -72,24 +59,6 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Confirmed!"
-            android:id="@+id/textView22"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:gravity="center_horizontal" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="00:00"
-            android:id="@+id/textView27"
-            android:gravity="right"
-            android:layout_weight="0" />
     </LinearLayout>
 
     <LinearLayout
@@ -99,24 +68,6 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Bought!"
-            android:id="@+id/textView23"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:gravity="center_horizontal" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="00:00"
-            android:id="@+id/textView28"
-            android:gravity="right"
-            android:layout_weight="0" />
     </LinearLayout>
 
     <LinearLayout
@@ -126,24 +77,6 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Deliveried!"
-            android:id="@+id/textView24"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:gravity="center_horizontal" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="00:00"
-            android:id="@+id/textView29"
-            android:gravity="right"
-            android:layout_weight="0" />
     </LinearLayout>
 
 </LinearLayout>
