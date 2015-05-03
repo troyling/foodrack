@@ -9,18 +9,13 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Your orders"
         android:id="@+id/textView2"
-        android:layout_gravity="center_horizontal" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="test Button"
-        android:id="@+id/button2"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="match_parent"
         android:id="@+id/orderListView"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="20dp"

@@ -47,12 +47,15 @@ public class OrderListAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             // TODO Layout need to be changed
-            convertView = inflater.inflate(R.layout.cart_list_row, null);
+            convertView = inflater.inflate(R.layout.order_list_admin_row, null);
 
         }
 
-        TextView itemName = (TextView) convertView.findViewById(R.id.cartItemName);
-        itemName.setText(order.getCreatedAt().toString());
+        TextView orderTime = (TextView) convertView.findViewById(R.id.textTime);
+        orderTime.setText(order.getCreatedAt().toString());
+        TextView orderStatus = (TextView) convertView.findViewById(R.id.textStatus);
+        orderStatus.setText(order.getStatus().toString());
+
         return convertView;
     }
 }
