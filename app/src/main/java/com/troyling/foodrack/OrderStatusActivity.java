@@ -31,6 +31,7 @@ public class OrderStatusActivity extends ActionBarActivity {
     public final static String ORDER_OBJECTID = "objectId";
     private GoogleMap mMap;
 
+    Order mOrder;
     TextView textOrderStatus;
     private Firebase locationRef;
     private Firebase statusRef;
@@ -90,8 +91,11 @@ public class OrderStatusActivity extends ActionBarActivity {
                 // TODO change the status of the order
                 if (dataSnapshot != null) {
                     String status = (String)dataSnapshot.getValue();
+                    if (status.equals(Order.STATUS_DELIVERED)) {
+                        mOrder.setStatus(Order.STATUS_DELIVERED);
+                        mOrder.saveInBackground();
+                    }
                     textOrderStatus.setText(status);
-//                    Toast.makeText(getApplicationContext(), dataSnapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -108,9 +112,11 @@ public class OrderStatusActivity extends ActionBarActivity {
             public void done(Order order, ParseException e) {
                 if (e == null) {
                     try {
+                        mOrder = order;
                         LatLng deliverLl = new LatLng(order.getDeliverLocation().getLatitude(), order.
                                 getDeliverLocation().getLongitude());
                         mMap.addMarker(new MarkerOptions().position(deliverLl).title("Deliver location"));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(deliverLl, 16));
                     } catch (NullPointerException nullExp) {
                         Log.d("Null pointer", "No data from DataSnapshot");
                     }
