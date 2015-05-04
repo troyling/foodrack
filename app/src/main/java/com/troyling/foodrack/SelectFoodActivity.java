@@ -153,11 +153,13 @@ public class SelectFoodActivity extends ActionBarActivity {
         listDataChild.put(listDataHeader.get(1), headDrink);
         listDataChild.put(listDataHeader.get(2), headDesert);
 
-        listDataHeader.add("Combos with medium hot coffee");
-        listDataChild.put(listDataHeader.get(3), headCombo1);
+        if (!restaurantName.equals("Gordon Library Café")) {
+            listDataHeader.add("Combos with medium hot coffee");
+            listDataChild.put(listDataHeader.get(3), headCombo1);
 
-        listDataHeader.add("Combos with small iced tea and hash browns");
-        listDataChild.put(listDataHeader.get(4), headCombo2);
+            listDataHeader.add("Combos with small iced tea and hash browns");
+            listDataChild.put(listDataHeader.get(4), headCombo2);
+        }
     }
 
     @Override
