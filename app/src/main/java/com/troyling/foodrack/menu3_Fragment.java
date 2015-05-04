@@ -34,20 +34,25 @@ public class menu3_Fragment extends Fragment {
         name = (TextView) rootView.findViewById(R.id.textNameOfAccountHolder);
         phone = (TextView) rootView.findViewById(R.id.textPhoneNumber);
         email = (TextView) rootView.findViewById(R.id.textEmailAddress);
+        buttonAdmin = (Button) rootView.findViewById(R.id.buttonAdmin);
 
         ParseUser user = ParseUser.getCurrentUser();
         name.setText("Name: " + user.get("name").toString());
         phone.setText("Phone: " + user.get("phone").toString());
         email.setText("Email: " + user.getEmail());
 
-        buttonAdmin = (Button) rootView.findViewById(R.id.buttonAdmin);
-        buttonAdmin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), AdminListActivity.class);
-                startActivity(intent);
-            }
-        });
+        if (user.getBoolean("isAdmin")) {
+            buttonAdmin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), AdminListActivity.class);
+                    startActivity(intent);
+                }
+            });
+        } else {
+            buttonAdmin.setVisibility(View.GONE);
+        }
+
 
         buttonLogOut = (Button) rootView.findViewById(R.id.buttonLogOut);
         buttonLogOut.setOnClickListener(new View.OnClickListener() {
