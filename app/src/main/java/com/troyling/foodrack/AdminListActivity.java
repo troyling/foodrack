@@ -70,7 +70,7 @@ public class AdminListActivity extends ActionBarActivity {
                     adapter = new OrderListAdapter(AdminListActivity.this, orders);
                     listView.setAdapter(adapter);
                 } else {
-                    ErrorHelper.getInstance().promptError(AdminListActivity.this, "Error connecting to backend", "Unable to find your orders now. Please try again later.");
+                    ErrorHelper.getInstance().promptError(AdminListActivity.this, "Error connecting to backend", e.getMessage());
                 }
             }
         });
