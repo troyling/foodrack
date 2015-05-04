@@ -109,6 +109,7 @@ public class SelectFoodActivity extends ActionBarActivity {
                     // Find menuItems
                     final ParseQuery<MenuItem> menuItemQuery = ParseQuery.getQuery(MenuItem.class);
                     menuItemQuery.fromLocalDatastore();
+                    menuItemQuery.orderByAscending(MenuItem.NAME);
                     menuItemQuery.whereEqualTo(MenuItem.RESTAURANT, restaurants.get(0));
                     menuItemQuery.findInBackground(new FindCallback<MenuItem>() {
                         @Override
