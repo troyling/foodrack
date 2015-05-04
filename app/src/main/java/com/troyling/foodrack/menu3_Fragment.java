@@ -57,7 +57,7 @@ public class menu3_Fragment extends Fragment {
                     @Override
                     public void done(ParseException e) {
                         if (e == null) {
-                            Intent intent = new Intent(getActivity(), SignInActivity.class);
+                            Intent intent = new Intent(getActivity(), WelcomeActivity.class);
                             startActivity(intent);
                             getActivity().finish();
                         } else {
