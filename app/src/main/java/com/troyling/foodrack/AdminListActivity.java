@@ -22,11 +22,11 @@ import java.util.List;
  */
 public class AdminListActivity extends ActionBarActivity {
 
-    Button buttonRefresh;
-    ListView listView;
-    List<Order> orders;
-    OrderListAdapter adapter;
-    ParseQuery<Order> allOrders;
+    private Button buttonRefresh;
+    private ListView listView;
+    private List<Order> orders;
+    private OrderListAdapter adapter;
+    private ParseQuery<Order> allOrders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

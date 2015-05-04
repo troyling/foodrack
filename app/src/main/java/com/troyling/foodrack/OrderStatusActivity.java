@@ -31,8 +31,8 @@ public class OrderStatusActivity extends ActionBarActivity {
     public final static String ORDER_OBJECTID = "objectId";
     private GoogleMap mMap;
 
-    Order mOrder;
-    TextView textOrderStatus;
+    private Order mOrder;
+    private TextView textOrderStatus;
     private Firebase locationRef;
     private Firebase statusRef;
     private Marker marker = null;

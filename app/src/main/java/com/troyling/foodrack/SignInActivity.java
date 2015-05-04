@@ -22,9 +22,9 @@ import java.util.List;
 
 
 public class SignInActivity extends ActionBarActivity {
-    EditText signInTokenField;
-    EditText passwordField;
-    Button confirmButton;
+    private EditText signInTokenField;
+    private EditText passwordField;
+    private Button confirmButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

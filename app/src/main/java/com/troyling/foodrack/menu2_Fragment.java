@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.foodrack.adapter.OrderListAdapter;
-import com.foodrack.helpers.ErrorHelper;
 import com.foodrack.models.Order;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -25,9 +24,9 @@ import java.util.List;
  * Created by ChandlerWu on 4/13/15.
  */
 public class menu2_Fragment extends Fragment {
-    View rootView;
-    ListView listView;
-    OrderListAdapter adapter;
+    private View rootView;
+    private ListView listView;
+    private OrderListAdapter adapter;
 
     @Nullable
     @Override

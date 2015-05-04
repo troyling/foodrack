@@ -22,12 +22,12 @@ import com.parse.SignUpCallback;
 public class SignUpActivity extends ActionBarActivity {
     private static String DEBUG_ERROR_FLAG = "Sign Up Error: ";
 
-    CheckBox agreementCheckbox;
-    EditText nameField;
-    EditText emailField;
-    EditText phoneField;
-    EditText passwordField;
-    Button confirmButton;
+    private CheckBox agreementCheckbox;
+    private EditText nameField;
+    private EditText emailField;
+    private EditText phoneField;
+    private EditText passwordField;
+    private Button confirmButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

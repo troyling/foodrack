@@ -11,7 +11,6 @@ import android.widget.ExpandableListView;
 import com.foodrack.adapter.MenuExpandableListAdapter;
 import com.foodrack.helpers.ErrorHelper;
 import com.foodrack.models.MenuItem;
-import com.foodrack.models.Order;
 import com.foodrack.models.Restaurant;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -31,13 +30,12 @@ public class SelectFoodActivity extends ActionBarActivity {
     public final static String FOOD_NAME_MESSAGE = "Foodrack.SelectFoodActivity.NameOfFood.MESSAGE";
     public final static String MENUITEM_OBJECTID = "MenuItem.MESSAGE";
 
-    Order order;
-    MenuItem menuItem;
-    MenuExpandableListAdapter listAdapter;
-    ExpandableListView expListView;
-    List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
-    List<MenuItem> listOfMenuItem;
+    private MenuItem menuItem;
+    private MenuExpandableListAdapter listAdapter;
+    private ExpandableListView expListView;
+    private List<String> listDataHeader;
+    private HashMap<String, List<String>> listDataChild;
+    private List<MenuItem> listOfMenuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

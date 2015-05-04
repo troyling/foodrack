@@ -31,14 +31,14 @@ public class AdminMapActivity extends ActionBarActivity {
     private Firebase locationRef; // Backend used to fetch order location and status
     private boolean isLocationShared = false;
 
-    Button bConfrim;
-    Button bDelivering;
-    Button bDelivered;
+    private Button bConfrim;
+    private Button bDelivering;
+    private Button bDelivered;
     private GoogleMap mMap;
-    LatLng mll;
-    String orderObjectId;
-    TextView textName;
-    TextView textPhone;
+    private LatLng mll;
+    private String orderObjectId;
+    private TextView textName;
+    private TextView textPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

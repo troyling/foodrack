@@ -19,12 +19,12 @@ import com.parse.ParseUser;
  * Created by ChandlerWu on 4/13/15.
  */
 public class menu3_Fragment extends Fragment {
-    View rootView;
-    Button buttonAdmin;
-    Button buttonLogOut;
-    TextView name;
-    TextView phone;
-    TextView email;
+    private View rootView;
+    private Button buttonAdmin;
+    private Button buttonLogOut;
+    private TextView name;
+    private TextView phone;
+    private TextView email;
 
     @Nullable
     @Override

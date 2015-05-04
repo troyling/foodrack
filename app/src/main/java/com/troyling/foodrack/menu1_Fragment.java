@@ -14,10 +14,10 @@ import android.widget.TextView;
  * Created by ChandlerWu on 4/13/15.
  */
 public class menu1_Fragment extends Fragment {
-    TextView ddText;
-    TextView lcText;
-    Button requestButton;
-    View rootView;
+    private TextView ddText;
+    private TextView lcText;
+    private Button requestButton;
+    private View rootView;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
