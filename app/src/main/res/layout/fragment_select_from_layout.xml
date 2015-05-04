@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Donkin Donuts"
+        android:text="Dunkin&apos; Donuts"
         android:id="@+id/textDD"
         android:layout_gravity="center_horizontal"
         android:textSize="45dp"
