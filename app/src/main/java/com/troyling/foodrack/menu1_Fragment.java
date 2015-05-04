@@ -3,10 +3,10 @@ package com.troyling.foodrack;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.app.Fragment;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -41,6 +41,7 @@ public class menu1_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(),SelectFoodActivity.class);
+                intent.putExtra(SelectFoodActivity.RESTAURANT_NAME, "Dunkin' Donuts");
                 startActivity(intent);
             }
         });
@@ -49,6 +50,7 @@ public class menu1_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(),SelectFoodActivity.class);
+                intent.putExtra(SelectFoodActivity.RESTAURANT_NAME, "Gordon Library Café");
                 startActivity(intent);
             }
         });

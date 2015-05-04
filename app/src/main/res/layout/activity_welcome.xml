@@ -1,23 +1,26 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+
     tools:context="com.troyling.foodrack.WelcomeActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Foodrack"
-        android:id="@+id/textView8"
-        android:layout_above="@+id/welcome_sign_up_button"
+    <ImageView
+        android:layout_width="153dp"
+        android:layout_height="140dp"
+        android:id="@+id/imageView2"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="50dp" />
+        android:background="@drawable/icon6"
+        android:layout_above="@+id/textView9"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="40dp"
+        android:layout_marginTop="40dp" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Sign up"
         android:id="@+id/welcome_sign_up_button"
@@ -26,20 +29,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="40dp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sign in"
-        android:id="@+id/welcome_sign_in_button"
-        android:layout_below="@+id/textView9"
-        android:layout_marginTop="15dp"
-        android:layout_alignLeft="@+id/welcome_sign_up_button"
-        android:layout_alignStart="@+id/welcome_sign_up_button"
-        android:layout_alignRight="@+id/welcome_sign_up_button"
-        android:layout_alignEnd="@+id/welcome_sign_up_button" />
+        android:layout_gravity="center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -49,6 +39,20 @@
         android:id="@+id/textView9"
         android:layout_below="@+id/welcome_sign_up_button"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp" />
+        android:layout_marginTop="15dp"
+        android:layout_gravity="center_horizontal" />
 
-</RelativeLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sign in"
+        android:id="@+id/welcome_sign_in_button"
+        android:layout_below="@+id/textView9"
+        android:layout_marginTop="15dp"
+        android:layout_alignLeft="@+id/welcome_sign_up_button"
+        android:layout_alignStart="@+id/welcome_sign_up_button"
+        android:layout_alignRight="@+id/welcome_sign_up_button"
+        android:layout_alignEnd="@+id/welcome_sign_up_button"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>

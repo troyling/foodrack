@@ -17,30 +17,43 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="We only delivery in the main campus "
+        android:text="Move the map to set deliver location"
         android:id="@+id/textView14"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="30dp" />
+        android:layout_gravity="center_horizontal" />
+    
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/mapAddress"
+            android:layout_width="300dp"
+            android:layout_height="250dp"
+            class="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_marginBottom="15dp"
+            android:layout_gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+
+        <ImageView
+            android:layout_width="55dp"
+            android:layout_height="50dp"
+            android:id="@+id/imageView"
+            android:background="@drawable/f2"
+            android:layout_alignTop="@+id/mapAddress"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="92dp" />
+    </RelativeLayout>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:ems="10"
-        android:id="@+id/editText"
+        android:id="@+id/addressNotes"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:hint="Your address. i.e &quot;AK 116&quot;" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/editText6"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:hint="Notes" />
+        android:hint="Notes (e.g. &quot;AK 116&quot;)" />
 
     <Button
         android:layout_width="fill_parent"
@@ -49,7 +62,6 @@
         android:id="@+id/buttonConfirm"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="30dp" />
+        android:layout_marginRight="20dp" />
 
 </LinearLayout>
