@@ -22,13 +22,15 @@ public class MenuItem extends ParseObject {
     public final static String SIZE_LARGE = "large";
     public final static String SIZE_MEDIUM = "medium";
     public final static String SIZE_SMALL = "small";
+    public static final String COMBOWITHCOFFE = "ComboWithCoffee";
+    public static final String COMBOWITHTTEA = "ComboWithHB";
 
     public String getName() {
         return getString(NAME);
     }
 
     public double getPrice() {
-        return getLong(PRICE);
+        return getDouble(PRICE);
     }
 
     public String getCategory() {

@@ -95,7 +95,8 @@ public class SelectFoodActivity extends ActionBarActivity {
         final List<String> headFood = new ArrayList<String>();
         final List<String> headDrink = new ArrayList<String>();
         final List<String> headDesert = new ArrayList<String>();
-        final List<String> headOther = new ArrayList<String>();
+        final List<String> headCombo1 = new ArrayList<String>();
+        final List<String> headCombo2 = new ArrayList<String>();
 
         // Find menus from Local
         ParseQuery<Restaurant> restaurantQuery = ParseQuery.getQuery(Restaurant.class);
@@ -128,9 +129,11 @@ public class SelectFoodActivity extends ActionBarActivity {
                                     else if (category.equals(MenuItem.DESSERT)) {
                                         headDesert.add(itemName);
                                     }
-                                    else {
-                                        listDataHeader.add("Others");
-                                        headOther.add(itemName);
+                                    else if (category.equals((MenuItem.COMBOWITHCOFFE))) {
+                                        headCombo1.add(itemName);
+                                    }
+                                    else if (category.equals((MenuItem.COMBOWITHTTEA))) {
+                                        headCombo2.add(itemName);
                                     }
                                 }
                             }
@@ -150,10 +153,12 @@ public class SelectFoodActivity extends ActionBarActivity {
         listDataChild.put(listDataHeader.get(0), headFood); // Header, Child data
         listDataChild.put(listDataHeader.get(1), headDrink);
         listDataChild.put(listDataHeader.get(2), headDesert);
-        // If nothing is in the "other" category, then no such head
-        if (headOther.size() > 0) {
-            listDataChild.put(listDataHeader.get(3), headOther);
-        }
+
+        listDataHeader.add("Combos with medium hot coffee");
+        listDataChild.put(listDataHeader.get(3), headCombo1);
+
+        listDataHeader.add("Combos with small iced tea and hash browns");
+        listDataChild.put(listDataHeader.get(4), headCombo2);
     }
 
     @Override

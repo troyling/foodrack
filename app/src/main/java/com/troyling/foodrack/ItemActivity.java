@@ -21,6 +21,8 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
+import java.math.BigDecimal;
+
 /**
  * Created by ChandlerWu on 4/29/15.
  */
@@ -28,10 +30,15 @@ public class ItemActivity extends ActionBarActivity{
     EditText notes;
     NumberPicker np;
     MenuItem menuItem;
+    Double price;
+    TextView textPrice;
+    TextView title;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_specify);
+
+        textPrice = (TextView) findViewById(R.id.textPrice);
 
         // Get the name of food from previous activity
         Intent intent = getIntent();
@@ -48,6 +55,8 @@ public class ItemActivity extends ActionBarActivity{
             public void done(MenuItem mi, ParseException e) {
                 if (e == null) {
                     menuItem = mi;
+                    price = mi.getPrice();
+                    textPrice.setText("Combined price： " + Double.toString(price));
                 } else {
                     ErrorHelper.getInstance().promptError(ItemActivity.this, "Error", e.getMessage());
                 }
@@ -55,7 +64,7 @@ public class ItemActivity extends ActionBarActivity{
         });
 
         // Set the title of this layout
-        TextView title = (TextView) findViewById(R.id.nameOfFood);
+        title = (TextView) findViewById(R.id.nameOfFood);
         title.setText(nameOfFood);
 
         // Number Picker Setup
@@ -69,6 +78,15 @@ public class ItemActivity extends ActionBarActivity{
         np.setWrapSelectorWheel(false);
         np.setDisplayedValues(nums);
         np.setValue(1);
+        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                int num = np.getValue();
+                double totalPrice = price * num;
+                Double truncatedDouble=new BigDecimal(totalPrice).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                textPrice.setText("Combined price： " + Double.toString(truncatedDouble));
+            }
+        });
 
         // Notes
         notes = (EditText) findViewById(R.id.foodNotes);

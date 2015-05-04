@@ -18,6 +18,7 @@ import com.parse.ParseUser;
 public class menu3_Fragment extends Fragment {
     View rootView;
     Button buttonAdmin;
+    Button buttonLogOut;
     TextView name;
     TextView phone;
     TextView email;
@@ -44,6 +45,18 @@ public class menu3_Fragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        buttonLogOut = (Button) rootView.findViewById(R.id.buttonLogOut);
+        buttonLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SignInActivity.class);
+                startActivity(intent);
+                //getActivity().finish();
+            }
+        });
+
+
 
         return rootView;
     }
