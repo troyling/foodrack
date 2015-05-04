@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 
 import com.foodrack.adapter.OrderListAdapter;
@@ -46,7 +45,7 @@ public class menu2_Fragment extends Fragment {
                         adapter = new OrderListAdapter(getActivity(), orders);
                         listView.setAdapter(adapter);
                     } else {
-                        ErrorHelper.getInstance().promptError(getActivity(), "Error connecting to backend", "Unable to find your orders now. Please try again later.");
+                        ErrorHelper.getInstance().promptError(getActivity(), "Error connecting to backend", e.getMessage());
                     }
                 }
             });

@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.foodrack.helpers.ErrorHelper;
+import com.parse.LogOutCallback;
+import com.parse.ParseException;
 import com.parse.ParseUser;
 
 /**
@@ -50,13 +53,20 @@ public class menu3_Fragment extends Fragment {
         buttonLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), SignInActivity.class);
-                startActivity(intent);
-                //getActivity().finish();
+                ParseUser.logOutInBackground(new LogOutCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e == null) {
+                            Intent intent = new Intent(getActivity(), SignInActivity.class);
+                            startActivity(intent);
+                            getActivity().finish();
+                        } else {
+                            ErrorHelper.getInstance().promptError(getActivity(), "Error", "Unable to log out");
+                        }
+                    }
+                });
             }
         });
-
-
 
         return rootView;
     }
