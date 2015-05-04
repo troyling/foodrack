@@ -167,7 +167,14 @@ public class CartActivity extends ActionBarActivity {
                 double lng = DataHelper.getInstance().getShoppingCart().getDeliverLocation().getLongitude();
                 double lat = DataHelper.getInstance().getShoppingCart().getDeliverLocation().getLatitude();
                 // Set the button name with the address
-                locationButton.setText(getGeoAddress(lat, lng));
+                String address = getGeoAddress(lat, lng);
+                Toast.makeText(getApplicationContext(), address, Toast.LENGTH_SHORT).show();
+                if (address.trim().equals("")) {
+                    ErrorHelper.getInstance().promptError(CartActivity.this, "Error", "Please set a correct address.");
+                } else {
+                    locationButton.setText(address);
+                }
+
             } catch (NullPointerException nullExp) {
                 Log.d("Address", "Address has not been set");
             }
@@ -320,7 +327,7 @@ public class CartActivity extends ActionBarActivity {
         if (id == R.id.action_empty_cart) {
             // alert user
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Remove everything in your shopping cart?").setPositiveButton("Empty", new DialogInterface.OnClickListener() {
+            builder.setMessage("Remove everything in your shopping cart?").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     DataHelper.getInstance().emptyShoppingCart();
