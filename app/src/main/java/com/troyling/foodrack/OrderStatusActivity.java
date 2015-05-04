@@ -91,11 +91,13 @@ public class OrderStatusActivity extends ActionBarActivity {
                 // TODO change the status of the order
                 if (dataSnapshot != null) {
                     String status = (String)dataSnapshot.getValue();
-                    if (status.equals(Order.STATUS_DELIVERED)) {
-                        mOrder.setStatus(Order.STATUS_DELIVERED);
-                        mOrder.saveInBackground();
+                    if (status != null) {
+                        if (status.equals(Order.STATUS_DELIVERED)) {
+                            mOrder.setStatus(Order.STATUS_DELIVERED);
+                            mOrder.saveInBackground();
+                        }
+                        textOrderStatus.setText(status);
                     }
-                    textOrderStatus.setText(status);
                 }
             }
 

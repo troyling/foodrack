@@ -6,14 +6,20 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
+import com.foodrack.helpers.ErrorHelper;
 import com.foodrack.models.Order;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 /**
  * Created by ChandlerWu on 5/2/15.
@@ -31,11 +37,16 @@ public class AdminMapActivity extends ActionBarActivity {
     private GoogleMap mMap;
     LatLng mll;
     String orderObjectId;
+    TextView textName;
+    TextView textPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_map);
+
+        textName = (TextView) findViewById(R.id.textPersonName);
+        textPhone = (TextView) findViewById(R.id.textPhone);
 
         orderObjectId = getIntent().getStringExtra(ORDER_OBJECTID);
         locationRef = new Firebase(FIRE_BASE_URL + orderObjectId);
@@ -69,6 +80,29 @@ public class AdminMapActivity extends ActionBarActivity {
             public void onClick(View v) {
                 locationRef.child("status").setValue(Order.STATUS_DELIVERED);
                 isLocationShared = false;
+            }
+        });
+
+        ParseQuery<Order> orderParseQuery = ParseQuery.getQuery(Order.class);
+        orderParseQuery.include(Order.OWNER);
+        orderParseQuery.getInBackground(orderObjectId, new GetCallback<Order>() {
+            @Override
+            public void done(Order order, ParseException e) {
+                if (e == null) {
+                    ParseUser user = order.getOwner();
+                    String phoneNum = user.getString("phone");
+                    String name = user.getString("name");
+
+                    if (name != null) {
+                        textName.setText(name);
+                    }
+
+                    if (phoneNum != null) {
+                        textPhone.setText(phoneNum);
+                    }
+                } else {
+                    ErrorHelper.getInstance().promptError(getApplicationContext(), "Error", e.getMessage());
+                }
             }
         });
 
