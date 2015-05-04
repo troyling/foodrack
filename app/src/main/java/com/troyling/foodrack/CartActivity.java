@@ -152,8 +152,10 @@ public class CartActivity extends ActionBarActivity {
                         Item item = (Item) adapter.getItem(position);
                         DataHelper.getInstance().removeItemFromShoppingCart(item);
                         loadShoppingCartToView();
+
                     }
                 }).show();
+
             }
         });
     }
