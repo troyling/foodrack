@@ -23,7 +23,6 @@ public class FoodrackApp extends Application {
 
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, "m0hPkVIzDsS8cAJMXymRwPfTW9ay1GWetzW8WZTy", "CBYYxxvuVV61B5UKc47TnFTVgJ6qrKi2Etyxgopn");
-        ParseUser.enableRevocableSessionInBackground();
 
         // Enable Local Datastore.
 
@@ -39,6 +38,7 @@ public class FoodrackApp extends Application {
         DataHelper.getInstance().syncDataInBackground();
 
         // clear cached empty shopping cart
-        DataHelper.getInstance().clearCachedOrderIfNecessary();
+//        DataHelper.getInstance().clearCachedOrderIfNecessary();
+        DataHelper.getInstance().getShoppingCart();
     }
 }

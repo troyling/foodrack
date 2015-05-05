@@ -116,7 +116,7 @@ public class CartActivity extends ActionBarActivity {
                 @Override
                 public void done(List<Item> itemList, ParseException e) {
                     if (e == null) {
-                        if (itemList.size() > 0) {
+                        if (itemList.size() >= 0) {
                             items = itemList;
                             adapter = new CartListAdapter(CartActivity.this, items);
                             listView.setAdapter(adapter);
