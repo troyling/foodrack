@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.foodrack.adapter.OrderListAdapter;
-import com.foodrack.helpers.ErrorHelper;
 import com.foodrack.models.Order;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -24,9 +24,9 @@ import java.util.List;
  * Created by ChandlerWu on 4/13/15.
  */
 public class menu2_Fragment extends Fragment {
-    View rootView;
-    ListView listView;
-    OrderListAdapter adapter;
+    private View rootView;
+    private ListView listView;
+    private OrderListAdapter adapter;
 
     @Nullable
     @Override
@@ -45,7 +45,8 @@ public class menu2_Fragment extends Fragment {
                         adapter = new OrderListAdapter(getActivity(), orders);
                         listView.setAdapter(adapter);
                     } else {
-                        ErrorHelper.getInstance().promptError(getActivity(), "Error connecting to backend", e.getMessage());
+                        Log.d("no order", "no order");
+                        //ErrorHelper.getInstance().promptError(getActivity(), "Error connecting to backend", e.getMessage());
                     }
                 }
             });

@@ -1,6 +1,5 @@
 package com.troyling.foodrack;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -20,13 +19,12 @@ import com.google.android.gms.maps.model.LatLng;
  */
 public class AddressActivity extends ActionBarActivity {
 
-    EditText addressNotesET;
-    String address;
-    String addressNotes;
-    double lat;
-    double lng;
-    Button confirmButton;
-    LatLng mll;
+    private EditText addressNotesET;
+    private String addressNotes;
+    private double lat;
+    private double lng;
+    private Button confirmButton;
+    private LatLng mll;
     private GoogleMap mMap;
 
     @Override

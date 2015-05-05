@@ -31,8 +31,8 @@ public class OrderStatusActivity extends ActionBarActivity {
     public final static String ORDER_OBJECTID = "objectId";
     private GoogleMap mMap;
 
-    Order mOrder;
-    TextView textOrderStatus;
+    private Order mOrder;
+    private TextView textOrderStatus;
     private Firebase locationRef;
     private Firebase statusRef;
     private Marker marker = null;
@@ -91,11 +91,13 @@ public class OrderStatusActivity extends ActionBarActivity {
                 // TODO change the status of the order
                 if (dataSnapshot != null) {
                     String status = (String)dataSnapshot.getValue();
-                    if (status.equals(Order.STATUS_DELIVERED)) {
-                        mOrder.setStatus(Order.STATUS_DELIVERED);
-                        mOrder.saveInBackground();
+                    if (status != null) {
+                        if (status.equals(Order.STATUS_DELIVERED)) {
+                            mOrder.setStatus(Order.STATUS_DELIVERED);
+                            mOrder.saveInBackground();
+                        }
+                        textOrderStatus.setText(status);
                     }
-                    textOrderStatus.setText(status);
                 }
             }
 

@@ -52,18 +52,18 @@ public class CartActivity extends ActionBarActivity {
     private final double DELIVERY_RATE = 0.12;
 
     // view
-    Button payButton;
-    Button locationButton;
-    String clientToken;
-    ListView listView;
-    List<Item> items;
+    private Button payButton;
+    private Button locationButton;
+    private String clientToken;
+    private ListView listView;
+    private List<Item> items;
 
-    TextView taxTextView;
-    TextView deliveryTextView;
-    TextView totalTextView;
+    private TextView taxTextView;
+    private TextView deliveryTextView;
+    private TextView totalTextView;
 
-    int savedItemCount;
-    CartListAdapter adapter;
+    private int savedItemCount;
+    private CartListAdapter adapter;
 
     double payment;
 
@@ -116,7 +116,7 @@ public class CartActivity extends ActionBarActivity {
                 @Override
                 public void done(List<Item> itemList, ParseException e) {
                     if (e == null) {
-                        if (itemList.size() > 0) {
+                        if (itemList.size() >= 0) {
                             items = itemList;
                             adapter = new CartListAdapter(CartActivity.this, items);
                             listView.setAdapter(adapter);
@@ -152,8 +152,10 @@ public class CartActivity extends ActionBarActivity {
                         Item item = (Item) adapter.getItem(position);
                         DataHelper.getInstance().removeItemFromShoppingCart(item);
                         loadShoppingCartToView();
+
                     }
                 }).show();
+
             }
         });
     }

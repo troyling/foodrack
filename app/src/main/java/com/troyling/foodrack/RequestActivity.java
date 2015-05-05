@@ -20,11 +20,11 @@ import com.parse.ParseUser;
  */
 public class RequestActivity extends ActionBarActivity {
 
-    Button sendButton;
-    EditText nameText;
-    EditText reasonText;
-    Request request;
-    ParseUser user;
+    private Button sendButton;
+    private EditText nameText;
+    private EditText reasonText;
+    private Request request;
+    private ParseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

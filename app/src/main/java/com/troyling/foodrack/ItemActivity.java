@@ -27,12 +27,12 @@ import java.math.BigDecimal;
  * Created by ChandlerWu on 4/29/15.
  */
 public class ItemActivity extends ActionBarActivity{
-    EditText notes;
-    NumberPicker np;
-    MenuItem menuItem;
-    Double price;
-    TextView textPrice;
-    TextView title;
+    private EditText notes;
+    private NumberPicker np;
+    private MenuItem menuItem;
+    private Double price;
+    private TextView textPrice;
+    private TextView title;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

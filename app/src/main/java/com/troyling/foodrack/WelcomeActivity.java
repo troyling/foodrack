@@ -14,8 +14,8 @@ import com.parse.ParseUser;
  * This is the launch activity. Will be directed to the other activity if user is cached.
  */
 public class WelcomeActivity extends ActionBarActivity {
-    Button signInButton;
-    Button signUpButton;
+    private Button signInButton;
+    private Button signUpButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

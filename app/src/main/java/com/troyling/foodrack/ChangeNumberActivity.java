@@ -15,9 +15,9 @@ import com.parse.SaveCallback;
 
 
 public class ChangeNumberActivity extends ActionBarActivity {
-    Button confirmButton;
-    EditText phoneNumberField;
-    String phoneNumber;
+    private Button confirmButton;
+    private EditText phoneNumberField;
+    private String phoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
